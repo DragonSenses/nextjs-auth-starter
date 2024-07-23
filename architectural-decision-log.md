@@ -73,7 +73,9 @@ Do you want to use CSS variables for colors? › no / [yes]
 
 chore: Configure shadcn/ui for project
 
-#### Full viewport height in globals.css
+### globals.css
+
+#### Use full viewport height
 
 To ensure that the entire viewport height is utilized, inside `globals.css` add the following code:
 
@@ -88,5 +90,75 @@ html,
 body,
 :root {
   height: 100%;
+}
+```
+
+#### TailwindCSS and @layer
+
+- [Using CSS and @layer | TailwindCSS](https://tailwindcss.com/docs/adding-custom-styles#using-css-and-layer)
+
+Tailwind groups styles into *layers* because in CSS, the order of the rules in your stylesheet decides which declaration wins when two selectors have the same specificity: 
+
+```css
+.btn {
+  background: blue;
+  /* ... */
+}
+
+.bg-black {
+  background: black;
+}
+```
+
+Here, both buttons will be black since `.bg-black` comes after `.btn` in the CSS:
+
+```tsx
+<button class="btn bg-black">...</button>
+<button class="bg-black btn">...</button>
+```
+
+To manage this, Tailwind organizes the styles it generates into three different "layers" — a concept popularized by [ITCSS](https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/#what-is-itcss).
+
+  - The `base` layer is for things like reset rules or default styles applied to plain HTML elements.
+  - The `components` layer is for class-based styles that you want to be able to override with utilities.
+  - The `utilities` layer is for small, single-purpose classes that should always take precedence over any other styles.
+
+Being explicit about this makes it easier to understand how your styles will interact with each other, and using the `@layer` directive lets you control the final declaration order while still organizing your actual code in whatever way you like.
+
+##### Adding custom utilities in TailwindCSS
+
+- [Adding custom utilities | TailwindCSS](https://tailwindcss.com/docs/adding-custom-styles#adding-custom-utilities)
+
+Add any of your own custom utility classes to Tailwind's utilities layer. This can be useful when there's a CSS feature you'd like to use in your project that Tailwind doesn't include utilities for out of the box.
+
+Let's add a page background gradient utility class named `page-bg-gradient`.
+
+style: Add page-bg-gradient utility class
+
+`app\globals.css`
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .page-bg-gradient {
+    @apply bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-400 to-blue-800;
+  }
+}
+```
+
+This leverages Tailwind's utility-first principles while allowing us to create reusable and maintainable custom classes.
+
+Now use the custom utility class in the JSX:
+
+`app\page.tsx`
+```tsx
+export default function Home() {
+  return (
+    <main className="page-bg-gradient">
+      Home
+    </main>
+  );
 }
 ```
