@@ -72,3 +72,21 @@ Do you want to use CSS variables for colors? › no / [yes]
 ```
 
 chore: Configure shadcn/ui for project
+
+#### Full viewport height in globals.css
+
+To ensure that the entire viewport height is utilized, inside `globals.css` add the following code:
+
+style: Use full viewport height for better layout
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+:root {
+  height: 100%;
+}
+```
