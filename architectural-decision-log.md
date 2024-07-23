@@ -26,3 +26,29 @@ Authentication is a core feature for nearly all applications, so this project pr
 
 8. **Best Practices**: Embeds best practices for authentication, session management, and security, ensuring that new projects adhere to high standards from the beginning.
 
+## Project Configuration
+
+### Install Next.js
+
+Let's get started with [Next.js 14 - App Router](https://nextjs.org/docs).
+
+- [Nextjs Installation](https://nextjs.org/docs/getting-started/installation)
+
+```sh
+npx create-next-app@latest
+```
+
+Now we answer the prompts that defines the set up of our project
+
+```sh
+What is your project named? my-app
+√ Would you like to use TypeScript? ... No / [Yes]
+√ Would you like to use ESLint? ... No / [Yes]
+√ Would you like to use Tailwind CSS? ... No / [Yes]
+√ Would you like to use `src/` directory? ... [No] / Yes
+√ Would you like to use App Router? (recommended) ... No / [Yes]
+√ Would you like to customize the default import alias (@/*)? ... [No] / Yes
+```
+
+chore: Initialize Next.js 14 app router project
+
