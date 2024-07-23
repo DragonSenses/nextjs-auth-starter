@@ -52,3 +52,23 @@ What is your project named? my-app
 
 chore: Initialize Next.js 14 app router project
 
+#### Install shadcn-ui
+
+The next step is to initialize [shadcn/ui](https://ui.shadcn.com/docs/installation/next).
+
+```sh
+npx shadcn-ui@latest init
+```
+
+You will be asked a few questions to configure `components.json`:
+
+```sh
+Need to install the following packages:
+  shadcn-ui@0.6.0
+Ok to proceed? (y) y
+Which style would you like to use? › Default
+Which color would you like to use as base color? › Slate
+Do you want to use CSS variables for colors? › no / [yes]
+```
+
+chore: Configure shadcn/ui for project
