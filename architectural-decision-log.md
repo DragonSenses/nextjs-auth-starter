@@ -167,3 +167,82 @@ export default function Home() {
   );
 }
 ```
+
+## AuthIntro component
+
+Let's make the first component `AuthIntro.tsx` file inside `/components`. It will return a heading and a paragraph.
+
+```tsx
+import React from 'react';
+
+export default function AuthIntro() {
+  const heading: string = "Auth 🛡️";
+
+  return (
+    <div>
+      <h1 className="text-6xl text-white font-semibold drop-shadow-md">
+        {heading}
+      </h1>
+      <p className="text-lg text-white">
+        An authentication service that shields your identity with the power of Auth.js
+      </p>
+    </div>
+  )
+}
+```
+
+Here are a few improvements to consider:
+
+1. **Semantic HTML**: Use semantic HTML elements like `<header>` and `<section>` to improve accessibility and SEO.
+2. **Container Styling**: Add some styling to the container `<div>` to ensure proper spacing and alignment.
+3. **Props for Flexibility**: Make the component more flexible by accepting `heading` and `description` as props.
+
+feat: Improve AuthIntro structure & flexibility
+
+- Use semantic HTML elements `<header>` for improved accessibility and SEO
+- Introduce props (heading and description) to make the component more flexible
+- Update default values for heading and description
+
+```tsx
+import React from 'react';
+
+interface AuthIntroProps {
+  heading?: string;
+  description?: string;
+}
+
+export default function AuthIntro({
+  heading = "Auth 🛡️",
+  description = "An authentication service that shields your identity with the power of Auth.js",
+}: AuthIntroProps) {
+  return (
+    <header className="text-center text-white">
+      <h1 className="text-6xl font-semibold drop-shadow-md">
+        {heading}
+      </h1>
+      <p className="text-lg">
+        {description}
+      </p>
+    </header>
+  );
+};
+```
+
+Now use `AuthIntro` inside the `Home` page.
+
+feat: Add AuthIntro component to Home page
+
+```tsx
+import AuthIntro from "@/components/AuthIntro";
+
+export default function Home() {
+
+  return (
+    <section className="flex flex-col items-center justify-center min-h-screen page-bg-gradient">
+      <div className="space-y-6">
+        <AuthIntro />
+      </div>
+    </section>
+  );
+}
+```
