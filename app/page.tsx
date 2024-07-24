@@ -1,7 +1,12 @@
+import AuthIntro from "@/components/AuthIntro";
+
 export default function Home() {
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center page-bg-gradient">
-      Home
-    </main>
+    <section className="flex flex-col items-center justify-center min-h-screen page-bg-gradient">
+      <div className="space-y-6">
+        <AuthIntro />
+      </div>
+    </section>
   );
 }
