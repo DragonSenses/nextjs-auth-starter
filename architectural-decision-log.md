@@ -152,6 +152,11 @@ This leverages Tailwind's utility-first principles while allowing us to create r
 
 Now use the custom utility class in the JSX:
 
+refactor: Remove boilerplate code from Home page
+
+- Simplified the Home component by removing unnecessary boilerplate code
+- Added the page background gradient utility class
+
 `app\page.tsx`
 ```tsx
 export default function Home() {
