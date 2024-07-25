@@ -21,13 +21,21 @@ export default function SignInButton({
   }
 
   return (
-    <Button
-      onClick={handleSignInClick}
-      size="lg"
-      variant="secondary"
-      className='font-semibold cursor-pointer'
-    >
-      Sign In
-    </Button>
-  )
+    <>
+      {mode === "modal" ? (
+        /* TODO: Implement modal functionality */
+        <div>Modal</div>
+      ) : (
+        /* Render a login redirect button */
+        <Button
+          onClick={handleSignInClick}
+          size="lg"
+          variant="secondary"
+          className='font-semibold cursor-pointer'
+        >
+          Sign In
+        </Button>
+      )}
+    </>
+  );
 }
