@@ -2,9 +2,21 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 
-export default function SignInButton() {
+interface SignInButtonProps {
+  asChild?: boolean;
+  mode?: "modal" | "redirect";
+};
+
+export default function SignInButton({
+  asChild,
+  mode = "redirect",
+}: SignInButtonProps) {
   return (
-    <Button variant="secondary" size="lg">
+    <Button
+      size="lg"
+      variant="secondary"
+      className='font-semibold cursor-pointer'
+    >
       Sign In
     </Button>
   )
