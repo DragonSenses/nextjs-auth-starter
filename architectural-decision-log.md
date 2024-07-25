@@ -246,3 +246,74 @@ export default function Home() {
   );
 }
 ```
+
+refactor: Move AuthIntro to /components/auth
+
+- Relocated AuthIntro component for better organization
+- Updated import paths accordingly
+
+Principles behind this move:
+- Separation of Concerns: Grouping components by functionality
+- Scalability: Easier to manage as the project grows
+- Reusability: Components can be reused across the application
+- Maintainability: Simplifies locating and updating components
+- Collaboration: Helps new developers onboard quickly
+- Consistency: Ensures a cohesive codebase
+
+## Sign In button
+
+Let's install the [shadcn/ui button component](https://ui.shadcn.com/docs/components/button).
+
+```sh
+npx shadcn-ui@latest add button
+```
+
+Now create the `SignInButton` component and use it in the home page.
+
+```tsx
+import React from 'react';
+
+import { Button } from '@/components/ui/button';
+
+export default function SignInButton() {
+  return (
+    <Button variant="secondary" size="lg">
+      Sign In
+    </Button>
+  )
+}
+```
+
+feat: Add SignInButton component to Home page
+
+```tsx
+import AuthIntro from "@/components/AuthIntro";
+import SignInButton from "@/components/SignInButton";
+
+export default function Home() {
+
+  return (
+    <section className="flex flex-col items-center justify-center min-h-screen page-bg-gradient">
+      <div className="flex flex-col items-center space-y-6">
+        <AuthIntro />
+        <SignInButton />
+      </div>
+    </section>
+  );
+}
+```
+
+refactor: Move SignInButton to /components/auth
+
+- Relocated SignInButton component for better organization
+- Updated import paths accordingly
+
+Principles behind this move:
+- Separation of Concerns: Grouping components by functionality
+- Scalability: Easier to manage as the project grows
+- Reusability: Components can be reused across the application
+- Maintainability: Simplifies locating and updating components
+- Collaboration: Helps new developers onboard quickly
+- Consistency: Ensures a cohesive codebase
+
+Made this change so that one can just move the `/components/auth` folder and adapt it into a project with ease.
