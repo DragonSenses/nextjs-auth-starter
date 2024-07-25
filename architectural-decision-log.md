@@ -508,3 +508,24 @@ refactor: Rename login to signin in pages & routes
 
 This refactor enhances consistency across the application, aligns with common user expectations for authentication flows, and ensures a cohesive user experience.
 
+### AuthLayout
+
+feat: Create AuthLayout component
+
+`app\auth\layout.tsx`
+```tsx
+import React from 'react';
+
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+
+  return (
+    <div className="auth-layout h-full flex flex-col items-center justify-center page-bg-gradient">
+      <main className="auth-content h-full flex items-center justify-center">
+        {children}
+      </main>
+    </div>
+  );
+}
+```
+
+Here we use the `main` tag wrapped by a `div` element. This is so we can later extend this layout to include `header` and `footer` section when needed.
