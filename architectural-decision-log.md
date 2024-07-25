@@ -350,13 +350,13 @@ export default function SignInButton({
 
 Then we need to mark the component as `"use client"`, because **Event handlers cannot be passed to Client Component props**. 
 
-Next add a click handler function `handleSignInClick` and assign it the `Button`'s `onClick` prop. The handler will use `useRouter` from `next/navigation` to push the `router` to the `/auth/login` path.
+Next add a click handler function `handleSignInClick` and assign it the `Button`'s `onClick` prop. The handler will use `useRouter` from `next/navigation` to push the `router` to the `/auth/signin` path.
 
 feat: Implement handleSignInClick in SignInButton
 
 - Mark component as "use client"
 - Use `useRouter` for navigation
-- Implement `handleSignInClick` function to navigate to /auth/login
+- Implement `handleSignInClick` function to navigate to /auth/signin
 - Assign `handleSignInClick` to `onClick`
 
 ```tsx
@@ -378,7 +378,7 @@ export default function SignInButton({
   const router = useRouter();
 
   const handleSignInClick = () => {
-    router.push("/auth/login");
+    router.push("/auth/signin");
   }
 
   return (
@@ -434,7 +434,7 @@ feat: Add conditional rendering in SignInButton
 
 - Implement conditional rendering based on `mode` prop
 - Add TODO comment for modal functionality
-- Render login redirect button by default
+- Render signin redirect button by default
 
 ```tsx
 "use client";
@@ -456,7 +456,7 @@ export default function SignInButton({
   const router = useRouter();
 
   const handleSignInClick = () => {
-    router.push("/auth/login");
+    router.push("/auth/signin");
   }
 
   return (
@@ -465,7 +465,7 @@ export default function SignInButton({
         /* TODO: Implement modal functionality */
         <div>Modal</div>
       ) : (
-        /* Render a login redirect button */
+        /* Render a sign-in redirect button */
         <Button
           onClick={handleSignInClick}
           size="lg"
@@ -482,21 +482,29 @@ export default function SignInButton({
 
 feat: Implement initial design of SignInButton
 
-## Log In Page
+## Sign In Page
 
-feat: Create LoginPage component
+feat: Create SignInPage component
 
-- Add LoginPage component in `app/auth/login/page.tsx`
+- Add SignInPage component in `app/auth/signin/page.tsx`
 - Initial implementation with basic structure
 
-`app\auth\login\page.tsx`
+`app\auth\signin\page.tsx`
 ```tsx
 import React from 'react';
 
-export default function LoginPage() {
+export default function SignInPage() {
   return (
-    <div>LoginPage</div>
+    <div>SignInPage</div>
   )
 }
 ```
+
+refactor: Rename login to signin in pages & routes
+
+- Update route from `/auth/login` to `/auth/signin`
+- Rename LoginPage component to SignInPage
+- Adjust all references to the new route
+
+This refactor enhances consistency across the application, aligns with common user expectations for authentication flows, and ensures a cohesive user experience.
 

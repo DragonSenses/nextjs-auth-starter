@@ -17,7 +17,7 @@ export default function SignInButton({
   const router = useRouter();
 
   const handleSignInClick = () => {
-    router.push("/auth/login");
+    router.push("/auth/signin");
   }
 
   return (
@@ -26,7 +26,7 @@ export default function SignInButton({
         /* TODO: Implement modal functionality */
         <div>Modal</div>
       ) : (
-        /* Render a login redirect button */
+        /* Render a sign-in redirect button */
         <Button
           onClick={handleSignInClick}
           size="lg"
