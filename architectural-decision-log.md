@@ -317,3 +317,167 @@ Principles behind this move:
 - Consistency: Ensures a cohesive codebase
 
 Made this change so that one can just move the `/components/auth` folder and adapt it into a project with ease.
+
+Now let's create the `SignInButtonProps` interface that contains the `mode` which could either be `"modal"` or `"redirect"`. And a boolean `asChild` prop. When assigning the interface, set the `mode` to `redirect` by default. While here we also add the styles `font-semibold cursor-pointer`.
+
+feat: Define prop types for SignInButton
+
+```tsx
+import React from 'react';
+
+import { Button } from '@/components/ui/button';
+
+interface SignInButtonProps {
+  asChild?: boolean;
+  mode?: "modal" | "redirect";
+};
+
+export default function SignInButton({
+  asChild,
+  mode = "redirect",
+}: SignInButtonProps) {
+  return (
+    <Button
+      size="lg"
+      variant="secondary"
+      className='font-semibold cursor-pointer'
+    >
+      Sign In
+    </Button>
+  )
+}
+```
+
+Then we need to mark the component as `"use client"`, because **Event handlers cannot be passed to Client Component props**. 
+
+Next add a click handler function `handleSignInClick` and assign it the `Button`'s `onClick` prop. The handler will use `useRouter` from `next/navigation` to push the `router` to the `/auth/login` path.
+
+feat: Implement handleSignInClick in SignInButton
+
+- Mark component as "use client"
+- Use `useRouter` for navigation
+- Implement `handleSignInClick` function to navigate to /auth/login
+- Assign `handleSignInClick` to `onClick`
+
+```tsx
+"use client";
+
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+
+interface SignInButtonProps {
+  asChild?: boolean;
+  mode?: "modal" | "redirect";
+};
+
+export default function SignInButton({
+  asChild,
+  mode = "redirect",
+}: SignInButtonProps) {
+  const router = useRouter();
+
+  const handleSignInClick = () => {
+    router.push("/auth/login");
+  }
+
+  return (
+    <Button
+      onClick={handleSignInClick}
+      size="lg"
+      variant="secondary"
+      className='font-semibold cursor-pointer'
+    >
+      Sign In
+    </Button>
+  )
+}
+```
+
+#### Arrow functions vs Function declarations
+
+**Note:** Using arrow functions over function declarations for event handlers and callbacks in React. 
+
+  Here are some reasons why an arrow function is used instead of a function declaration:
+
+  1. **Lexical `this` Binding**: Arrow functions do not have their own `this` context. They inherit `this` from the surrounding scope, which can be useful in React components to avoid issues with `this` binding.
+
+  2. **Conciseness**: Arrow functions provide a more concise syntax, making the code shorter and often easier to read.
+
+  3. **Consistency**: Using arrow functions for event handlers and callbacks is a common practice in React, promoting consistency across your codebase.
+
+  4. **Avoiding Rebinding**: With arrow functions, you don't need to worry about rebinding `this` in methods or using `.bind(this)` in the constructor, which can simplify your code.
+
+  Here's a comparison:
+
+  **Arrow Function:**
+  ```tsx
+  const handleSignInClick = () => {
+    console.log("Sign In Button was clicked!");
+  };
+  ```
+
+  **Function Declaration:**
+  ```tsx
+  function handleSignInClick() {
+    console.log("Sign In Button was clicked!");
+  }
+  ```
+
+  In this specific case, using an arrow function helps keep the code concise and avoids potential issues with `this` binding, even though `this` isn't directly used in the function.
+
+### Conditional Rendering of Sign In button
+
+In the return statement, let's return a different JSX element when the `mode` is `"modal"`.
+
+feat: Add conditional rendering in SignInButton
+
+- Implement conditional rendering based on `mode` prop
+- Add TODO comment for modal functionality
+- Render login redirect button by default
+
+```tsx
+"use client";
+
+import React from 'react';
+import { useRouter } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
+
+interface SignInButtonProps {
+  asChild?: boolean;
+  mode?: "modal" | "redirect";
+};
+
+export default function SignInButton({
+  asChild,
+  mode = "redirect",
+}: SignInButtonProps) {
+  const router = useRouter();
+
+  const handleSignInClick = () => {
+    router.push("/auth/login");
+  }
+
+  return (
+    <>
+      {mode === "modal" ? (
+        /* TODO: Implement modal functionality */
+        <div>Modal</div>
+      ) : (
+        /* Render a login redirect button */
+        <Button
+          onClick={handleSignInClick}
+          size="lg"
+          variant="secondary"
+          className='font-semibold cursor-pointer'
+        >
+          Sign In
+        </Button>
+      )}
+    </>
+  );
+}
+```
+
+feat: Implement initial design of SignInButton
