@@ -1,5 +1,5 @@
 import AuthIntro from "@/components/auth/AuthIntro";
-import SignInButton from "@/components/SignInButton";
+import SignInButton from "@/components/auth/SignInButton";
 
 export default function Home() {
 
