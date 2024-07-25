@@ -481,3 +481,22 @@ export default function SignInButton({
 ```
 
 feat: Implement initial design of SignInButton
+
+## Log In Page
+
+feat: Create LoginPage component
+
+- Add LoginPage component in `app/auth/login/page.tsx`
+- Initial implementation with basic structure
+
+`app\auth\login\page.tsx`
+```tsx
+import React from 'react';
+
+export default function LoginPage() {
+  return (
+    <div>LoginPage</div>
+  )
+}
+```
+
