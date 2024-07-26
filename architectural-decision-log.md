@@ -529,3 +529,72 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 ```
 
 Here we use the `main` tag wrapped by a `div` element. This is so we can later extend this layout to include `header` and `footer` section when needed.
+
+### SignInForm component
+
+Create a react functional component `SignInForm` in `/components/auth`.
+
+`components\auth\SignInForm.tsx`
+```tsx
+import React from 'react';
+
+export default function SignInForm() {
+  return (
+    <div>SignInForm</div>
+  )
+}
+```
+
+Then use the `SignInForm` inside `SignInPage`.
+
+feat: Use SignInForm component in SignInPage
+
+`app\auth\signin\page.tsx`
+```tsx
+import React from 'react';
+import SignInForm from '@/components/auth/SignInForm';
+
+export default function SignInPage() {
+  return (
+    <SignInForm />
+  );
+}
+```
+
+#### CardWrapper component
+
+Install [shadcn/ui card](https://ui.shadcn.com/docs/components/card).
+
+```sh
+npx shadcn-ui@latest add card
+```
+
+Then create create component `/components/auth/CardWrapper.tsx`. Then create the prop interface and assign it to the component.
+
+feat: Define prop types for CardWrapper
+
+```tsx
+"use client";
+
+import React from 'react';
+
+interface CardWrapperProps {
+  children: React.ReactNode;
+  backButtonHref: string;
+  backButtonLabel: string;
+  headerLabel: string;
+  showSocial?: boolean;
+};
+
+export default function CardWrapper({
+  children,
+  backButtonHref,
+  backButtonLabel,
+  headerLabel,
+  showSocial,
+}: CardWrapperProps) {
+  return (
+    <div>CardWrapper</div>
+  )
+}
+```
