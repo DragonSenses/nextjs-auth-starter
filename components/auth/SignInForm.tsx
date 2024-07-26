@@ -1,7 +1,10 @@
 import React from 'react';
+import CardWrapper from '@/components/auth/CardWrapper';
 
 export default function SignInForm() {
   return (
-    <div>SignInForm</div>
+    <CardWrapper>
+      SignInForm
+    </CardWrapper>
   )
 }
