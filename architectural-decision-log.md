@@ -761,3 +761,61 @@ export default function CardWrapper({
   )
 }
 ```
+
+##### SVG assets
+
+feat: Add SVG assets for auth in /public/img/auth
+
+This commit adds the necessary SVG files for authentication-related components. The SVGs are located in the /public/img/auth folder.
+
+Let's get a few icons we need for the social login. You can install [`react-icons`](https://react-icons.github.io/react-icons/) package directly or manually add the specific icions from a smaller icon library using inline SVG icons. This way we can keep the bundle size smaller and avoid unecessary dependencies.
+
+The icons to get are `FaGithub` and `FaGoogle` from react-icons. To add the icon files locally, inside the `public` folder, create the `/img/auth` folder. Then within create the name of the icon, e.g., `github.svg` and inside input the svg code. We can find this on the [website](https://react-icons.github.io/react-icons/search/#q=github) and inspect element on the icon you want and edit the SVG.
+
+You can also use other icon libraries such as [Flaticon](https://www.flaticon.com/free-icons/library), [Iconoir](https://iconoir.com/) or [Icons8](https://icons8.com/icons/).
+
+Now to use the SVG assets we can either use `Image` from `next/image` or Import SVGs as React components.
+
+1. **Embed SVGs using JSX syntax in a React component**:
+   - You can directly import an SVG file and use it as a React component. For example:
+     ```tsx
+     import { ReactComponent as MyIcon } from '../path/to/MyIcon.svg';
+
+     // Usage:
+     <MyIcon />
+     ```
+   - Make sure your SVG files are located in a folder (e.g., `public/img`) accessible to Next.js.
+
+2. **Load SVGs using the `next/image` component**:
+   - The `next/image` component optimizes image loading, including SVGs.
+   - Place your SVGs in the `public` folder.
+   - Use the `next/image` component like this:
+     ```tsx
+     import Image from 'next/image';
+
+     // Usage:
+     <Image src="/img/MyIcon.svg" alt="My Icon" width={100} height={100} />
+     ```
+
+##### Handling SVGs in a Next.js application
+
+docs: Explore SVG asset handling in Next.js
+
+Let's explore the benefits of using both methods for handling SVGs in a Next.js application:
+
+1. **Using `next/image`**:
+   - **Optimization**: The `next/image` component is primarily designed for raster images, but it can also handle SVGs. It provides benefits like **lazy loading**, automatic image optimization, and responsive image loading.
+   - **Lazy Loading**: With `next/image`, SVGs are loaded lazily, improving page load performance by only fetching the image when it's needed.
+   - **Automatic Optimization**: `next/image` optimizes images based on the device and screen size, reducing the overall bundle size.
+   - **Accessibility**: It ensures proper accessibility attributes for images.
+   - **Consistency**: If your project already uses `next/image` for other images, using it for SVGs maintains consistency.
+
+2. **Importing SVGs as React Components**:
+   - **Resolution Independence**: SVGs are resolution-independent, meaning they can be scaled up or down without losing quality. This is useful for responsive designs.
+   - **Direct Usage**: You can import an SVG file as a React component using the `ReactComponent` syntax and render it directly in JSX. No need for additional conversion or data URLs.
+   - **Customization**: As React components, SVGs can be easily customized with props or CSS.
+   - **SEO-Friendly**: Search engines can index and crawl SVGs, making them SEO-friendly.
+   - **Animation and Interaction**: SVGs can be animated and manipulated using CSS and JavaScript.
+
+In summary, if you need lazy loading and automatic optimization, consider using `next/image`. If you prefer direct customization and resolution independence, importing SVGs as React components is a great choice. Choose the method that best fits your project's requirements.
+
