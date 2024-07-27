@@ -718,3 +718,46 @@ export default function AuthHeader({
   )
 }
 ```
+
+Now we can use the `AuthHeader` inside the `CardWrapper`'s `CardHeader`. While here we can also wrap the `children` by the `CardContent`.
+
+feat: Use AuthHeader component in CardWrapper
+
+```tsx
+import AuthHeader from '@/components/auth/AuthHeader';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+
+interface CardWrapperProps {
+  children: React.ReactNode;
+  backButtonHref: string;
+  backButtonLabel: string;
+  headerLabel: string;
+  showSocial?: boolean;
+};
+
+export default function CardWrapper({
+  children,
+  backButtonHref,
+  backButtonLabel,
+  headerLabel,
+  showSocial,
+}: CardWrapperProps) {
+  return (
+    <Card className='w-96 shadow-md'>
+      <CardHeader>
+        <AuthHeader label={headerLabel} />
+      </CardHeader>
+      <CardContent>
+        {children}
+      </CardContent>
+    </Card>
+  )
+}
+```

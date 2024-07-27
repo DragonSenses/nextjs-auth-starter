@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import AuthHeader from '@/components/auth/AuthHeader';
 import {
   Card,
   CardContent,
@@ -28,7 +29,12 @@ export default function CardWrapper({
 }: CardWrapperProps) {
   return (
     <Card className='w-96 shadow-md'>
-      {children}
+      <CardHeader>
+        <AuthHeader label={headerLabel} />
+      </CardHeader>
+      <CardContent>
+        {children}
+      </CardContent>
     </Card>
   )
 }
