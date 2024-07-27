@@ -1,7 +1,17 @@
 import React from 'react';
 
-export default function AuthHeader() {
+interface AuthHeaderProps {
+  heading?: string;
+  label: string;
+};
+
+export default function AuthHeader({
+  heading = "Auth 🛡️",
+  label,
+}: AuthHeaderProps) {
   return (
-    <div>AuthHeader</div>
+    <div>
+      AuthHeader
+    </div>
   )
 }
