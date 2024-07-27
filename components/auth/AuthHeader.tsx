@@ -10,8 +10,13 @@ export default function AuthHeader({
   label,
 }: AuthHeaderProps) {
   return (
-    <div>
-      AuthHeader
+    <div className='w-full flex flex-col items-center justify-center gap-y-4'>
+      <h1 className='text-3xl font-semibold'>
+        {heading}
+      </h1>
+      <p className='text-sm text-muted-foreground'>
+        {label}
+      </p>
     </div>
   )
 }
