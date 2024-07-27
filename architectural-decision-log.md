@@ -762,6 +762,24 @@ export default function CardWrapper({
 }
 ```
 
+#### SocialSignIn component
+
+feat: Create SocialSignIn component
+
+```tsx
+import React from 'react';
+
+export default function SocialSignIn() {
+  return (
+    <div className='w-full flex items-center gap-x-2'>
+      SocialSignIn
+    </div>
+  );
+}
+```
+
+Next we need the SVG assets to display social sign in, OAuth2 for Github and Google.
+
 ##### SVG assets
 
 feat: Add SVG assets for auth in /public/img/auth
@@ -819,3 +837,49 @@ Let's explore the benefits of using both methods for handling SVGs in a Next.js 
 
 In summary, if you need lazy loading and automatic optimization, consider using `next/image`. If you prefer direct customization and resolution independence, importing SVGs as React components is a great choice. Choose the method that best fits your project's requirements.
 
+##### Create SocialSignIn component
+
+We can create the SVG icon by converting it into a react component. Then we can use the SVG component like this:
+
+```tsx
+import React from 'react';
+
+import GithubIcon from '@/public/img/auth/GitHubIcon';
+import GoogleIcon from '@/public/img/auth/GoogleIcon';
+
+export default function SocialSignIn() {
+  return (
+    <div className='w-full flex items-center gap-x-2'>
+      <GithubIcon />
+      <GoogleIcon />
+    </div>
+  );
+}
+```
+
+Or we can use `next/image` and use the `svg` file directly.
+
+Now for the output of `SocialSignIn` return a `Button` that wraps around an SVG asset.
+
+feat: Add Google social sign-in button
+
+```tsx
+import React from 'react';
+
+import GoogleIcon from '@/public/img/auth/GoogleIcon';
+import { Button } from '@/components/ui/button';
+
+export default function SocialSignIn() {
+  return (
+    <div className='w-full flex items-center gap-x-2'>
+      <Button
+        size='lg'
+        className='w-full'
+        variant='outline'
+      >
+        <GoogleIcon className='h-5 w-5'/>
+      </Button>
+    </div>
+  );
+}
+```
