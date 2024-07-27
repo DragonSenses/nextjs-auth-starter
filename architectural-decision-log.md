@@ -598,3 +598,123 @@ export default function CardWrapper({
   )
 }
 ```
+
+Return a `Card` as the output of `CardWrapper`
+
+feat: Implement Card component in CardWrapper
+
+```tsx
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+
+export default function CardWrapper({
+ // ...props
+}: CardWrapperProps) {
+  return (
+    <Card className='w-96 shadow-md'>
+      {children}
+    </Card>
+  )
+}
+```
+
+Then return the `CardWrapper` component as the output of the `SignInForm`.
+
+feat: Use CardWrapper component in SignInForm
+
+```tsx
+import React from 'react';
+import CardWrapper from '@/components/auth/CardWrapper';
+
+export default function SignInForm() {
+  return (
+    <CardWrapper>
+      SignInForm
+    </CardWrapper>
+  )
+}
+```
+
+Now let's pass the prop values to `CardWrapper` to implement the `SignInForm`.
+
+feat: Implement SignInForm using CardWrapper
+
+```tsx
+export default function SignInForm() {
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      SignInForm
+    </CardWrapper>
+  );
+}
+```
+
+#### AuthHeader component
+
+Now before we improve the `CardWrapper` component, we need to create a reusable component to display the header. Create the `AuthHeader` component, which will have a prop `label` and optional prop `heading`.
+
+feat: Define prop types for AuthHeader component
+
+```tsx
+import React from 'react';
+
+interface AuthHeaderProps {
+  heading?: string;
+  label: string;
+};
+
+export default function AuthHeader({
+  heading = "Auth 🛡️",
+  label,
+}: AuthHeaderProps) {
+  return (
+    <div>
+      AuthHeader
+    </div>
+  )
+}
+```
+
+Then update the output with the `heading` and `label`.
+
+feat: Implement AuthHeader with dynamic props
+
+This commit adds the AuthHeader component, which accepts two props:
+- `heading` (optional): The main heading for the authentication section.
+- `label`: The label or description for the authentication content.
+
+```tsx
+import React from 'react';
+
+interface AuthHeaderProps {
+  heading?: string;
+  label: string;
+};
+
+export default function AuthHeader({
+  heading = "Auth 🛡️",
+  label,
+}: AuthHeaderProps) {
+  return (
+    <div className='w-full flex flex-col items-center justify-center gap-y-4'>
+      <h1 className='text-3xl font-semibold'>
+        {heading}
+      </h1>
+      <p className='text-sm text-muted-foreground'>
+        {label}
+      </p>
+    </div>
+  )
+}
+```
