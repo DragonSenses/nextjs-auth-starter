@@ -1,6 +1,14 @@
 import React from 'react';
 
-const GithubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+/**
+ * GitHubIcon component.
+ *
+ * Renders an SVG icon with customizable props.
+ * @see {@link https://react-icons.github.io/react-icons/}
+ * @param {React.SVGProps<SVGSVGElement>} props - Additional SVG props.
+ * @returns {JSX.Element} - The rendered SVG icon.
+ */
+const GitHubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     stroke="currentColor"
     fill="currentColor"
@@ -16,4 +24,4 @@ const GithubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
-export default GithubIcon;
+export default GitHubIcon;
