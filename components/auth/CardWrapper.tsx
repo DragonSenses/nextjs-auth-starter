@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import BackButton from '@/components/auth/BackButton';
 import SocialSignIn from '@/components/auth/SocialSignIn';
 
 interface CardWrapperProps {
@@ -44,6 +45,12 @@ export default function CardWrapper({
           <SocialSignIn />
         </CardFooter>
       )}
+      <CardFooter>
+        <BackButton 
+          href={backButtonHref}
+          label={backButtonLabel}
+        />
+      </CardFooter>
     </Card>
-  )
+  );
 }
