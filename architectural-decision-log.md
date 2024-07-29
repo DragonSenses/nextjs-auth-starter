@@ -963,6 +963,8 @@ const GoogleColoredIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export default GoogleColoredIcon;
 ```
 
+###### Add Google social sign-in button
+
 Now use `GoogleColoredIcon` in the `SocialSignIn`.
 
 feat: Update Google icon in SocialSignIn component
@@ -982,6 +984,39 @@ export default function SocialSignIn() {
         variant='outline'
       >
        <GoogleColoredIcon className='h-5 w-5' />
+      </Button>
+    </div>
+  );
+}
+```
+
+###### Add Github social sign-in button
+
+feat: Add GitHub social sign-in button
+
+```tsx
+import React from 'react';
+
+import GitHubIcon from '@/public/img/auth/GitHubIcon';
+import GoogleColoredIcon from '@/public/img/auth/GoogleColoredIcon';
+import { Button } from '@/components/ui/button';
+
+export default function SocialSignIn() {
+  return (
+    <div className='w-full flex items-center gap-x-2'>
+      <Button
+        size='lg'
+        className='w-full'
+        variant='outline'
+      >
+       <GoogleColoredIcon className='h-5 w-5' />
+      </Button>
+      <Button
+        size='lg'
+        className='w-full'
+        variant='outline'
+      >
+       <GitHubIcon className='h-5 w-5' />
       </Button>
     </div>
   );
