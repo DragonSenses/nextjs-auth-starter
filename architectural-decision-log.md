@@ -1059,3 +1059,121 @@ export default function CardWrapper({
   )
 }
 ```
+
+#### BackButton component
+
+Create the `BackButton` component.
+
+feat: Define prop types for BackButton component
+
+```tsx
+import React from 'react';
+
+import { Button } from '@/components/ui/button';
+
+interface BackButtonProps {
+  href: string;
+  label: string;
+};
+
+export default function BackButton({
+  href,
+  label,
+}: BackButtonProps) {
+  return (
+    <Button>BackButton</Button>
+  )
+}
+```
+
+We want to put a `Link` inside, but a `Button` and a `Link` serves different purposes! This will come across a difference of expectations for users and accessibility issues. Instead we have two ways to display a `Link` with `Button`-like styles, as we want here. According to the [Button | shadcn/ui docs](https://ui.shadcn.com/docs/components/button): 
+
+  1. We can use the `buttonVariants` helper to create a link that looks like a button.
+    ```tsx
+    import { buttonVariants } from "@/components/ui/button"
+    <Link className={buttonVariants({ variant: "outline" })}>Click here</Link>
+    ```
+  2. Alternatively, you can set the `asChild` parameter and nest the link component.
+    ```tsx
+    <Button asChild>
+     <Link href="/login">Login</Link>
+    </Button>
+    ```
+
+For clarity, I will use the the `buttonVariants` to make it clear that we are simply using the styles of the `Button`.
+
+refactor: Update BackButton component to use Link
+
+This commit refactors the BackButton component to utilize the Next.js Link component for navigation. The 'href' prop specifies the link destination, and the 'label' prop sets the button text. The styling remains consistent with shadcn/ui.
+
+```tsx
+import React from 'react';
+import Link from 'next/link';
+
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from '@/lib/utils';
+
+interface BackButtonProps {
+  href: string;
+  label: string;
+};
+
+export default function BackButton({
+  href,
+  label,
+}: BackButtonProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        'font-normal w-full text-primary underline-offset-4 hover:underline',
+        buttonVariants({ size: "sm" }),
+        buttonVariants({ variant: "destructive" }),
+      )}
+    >
+      {label}
+    </Link>
+  );
+}
+```
+
+Now use `BackButton` in `CardWrapper`.
+
+feat: Add BackButton component in CardWrapper
+
+```tsx
+import BackButton from '@/components/auth/BackButton';
+
+export default function CardWrapper({
+  children,
+  backButtonHref,
+  backButtonLabel,
+  headerLabel,
+  showSocial,
+}: CardWrapperProps) {
+
+  const showSocialSignIn: boolean = true;
+
+  return (
+    <Card className='w-96 shadow-md'>
+      <CardHeader>
+        <AuthHeader label={headerLabel} />
+      </CardHeader>
+      <CardContent>
+        {children}
+      </CardContent>
+      {showSocialSignIn && (
+        <CardFooter>
+          <SocialSignIn />
+        </CardFooter>
+      )}
+      <CardFooter>
+        <BackButton 
+          href={backButtonHref}
+          label={backButtonLabel}
+        />
+      </CardFooter>
+    </Card>
+  )
+}
+```
