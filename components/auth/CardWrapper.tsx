@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import SocialSignIn from '@/components/auth/SocialSignIn';
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -27,6 +28,9 @@ export default function CardWrapper({
   headerLabel,
   showSocial,
 }: CardWrapperProps) {
+
+  const showSocialSignIn: boolean = true;
+
   return (
     <Card className='w-96 shadow-md'>
       <CardHeader>
@@ -35,6 +39,11 @@ export default function CardWrapper({
       <CardContent>
         {children}
       </CardContent>
+      {showSocialSignIn && (
+        <CardFooter>
+          <SocialSignIn />
+        </CardFooter>
+      )}
     </Card>
   )
 }

@@ -883,3 +883,40 @@ export default function SocialSignIn() {
   );
 }
 ```
+
+#### Add SocialSignIn in CardWrapper component
+
+feat: Add SocialSignIn in CardWrapper component
+
+Conditionally render the SocialSignIn component within the CardWrapper. This component handles social sign-in functionality.
+
+```tsx
+import SocialSignIn from '@/components/auth/SocialSignIn';
+
+export default function CardWrapper({
+  children,
+  backButtonHref,
+  backButtonLabel,
+  headerLabel,
+  showSocial,
+}: CardWrapperProps) {
+
+  const showSocialSignIn: boolean = true;
+
+  return (
+    <Card className='w-96 shadow-md'>
+      <CardHeader>
+        <AuthHeader label={headerLabel} />
+      </CardHeader>
+      <CardContent>
+        {children}
+      </CardContent>
+      {showSocialSignIn && (
+        <CardFooter>
+          <SocialSignIn />
+        </CardFooter>
+      )}
+    </Card>
+  )
+}
+```
