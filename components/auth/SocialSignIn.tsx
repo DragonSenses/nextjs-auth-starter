@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GoogleIcon from '@/public/img/auth/GoogleIcon';
+import GoogleColoredIcon from '@/public/img/auth/GoogleColoredIcon';
 import { Button } from '@/components/ui/button';
 
 export default function SocialSignIn() {
@@ -11,7 +11,7 @@ export default function SocialSignIn() {
         className='w-full'
         variant='outline'
       >
-        <GoogleIcon className='h-5 w-5'/>
+       <GoogleColoredIcon className='h-5 w-5' />
       </Button>
     </div>
   );
