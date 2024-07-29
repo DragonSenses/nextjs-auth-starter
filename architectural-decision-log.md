@@ -788,7 +788,7 @@ This commit adds the necessary SVG files for authentication-related components. 
 
 Let's get a few icons we need for the social login. You can install [`react-icons`](https://react-icons.github.io/react-icons/) package directly or manually add the specific icions from a smaller icon library using inline SVG icons. This way we can keep the bundle size smaller and avoid unecessary dependencies.
 
-The icons to get are `FaGithub` and `FaGoogle` from react-icons. To add the icon files locally, inside the `public` folder, create the `/img/auth` folder. Then within create the name of the icon, e.g., `github.svg` and inside input the svg code. We can find this on the [website](https://react-icons.github.io/react-icons/search/#q=github) and inspect element on the icon you want and edit the SVG.
+The icons to get are `FaGithub` and `FcGoogle` from react-icons. To add the icon files locally, inside the `public` folder, create the `/img/auth` folder. Then within create the name of the icon, e.g., `github.svg` and inside input the svg code. We can find this on the [website](https://react-icons.github.io/react-icons/search/#q=github) and inspect element on the icon you want and edit the SVG.
 
 You can also use other icon libraries such as [Flaticon](https://www.flaticon.com/free-icons/library), [Iconoir](https://iconoir.com/) or [Icons8](https://icons8.com/icons/).
 
@@ -883,6 +883,87 @@ export default function SocialSignIn() {
   );
 }
 ```
+
+Here is an alternative way using `Image` component:
+
+```tsx
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+
+export default function SocialSignIn() {
+  return (
+    <div className='w-full flex items-center gap-x-2'>
+      <Button
+        size='lg'
+        className='w-full'
+        variant='outline'
+      >
+        <Image 
+          src='/img/auth/google2.svg'
+          width={20}
+          height={20}
+          alt='Google Icon to sign in with Google'
+        />
+      </Button>
+    </div>
+  );
+}
+```
+
+Now here is an example SVG converted to JSX component to be used as an icon.
+
+feat: Create GoogleColoredIcon SVG component
+
+Create a new React component named GoogleColoredIcon that renders an SVG with the specified path data. Pass any additional props to the SVG element. SVG file comes from [react-icons](https://react-icons.github.io/react-icons/).
+
+Source: https://github.com/react-icons/react-icons
+
+`public\img\auth\GoogleColoredIcon.tsx`
+```tsx
+import React from "react";
+
+const GoogleColoredIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="200"
+    height="200"
+    x="0"
+    y="0"
+    fill="currentColor"
+    stroke="currentColor"
+    strokeWidth="0"
+    viewBox="0 0 48 48"
+    {...props} // Pass any additional props to the SVG
+
+  >
+    {/* path data */}
+    <path
+      fill="#FFC107"
+      d="..."
+      stroke="none"
+    ></path>
+    <path
+      fill="#FF3D00"
+      d="..."
+      stroke="none"
+    ></path>
+    <path
+      fill="#4CAF50"
+      d="..."
+      stroke="none"
+    ></path>
+    <path
+      fill="#1976D2"
+      d="..."
+      stroke="none"
+    ></path>
+  </svg>
+);
+
+export default GoogleColoredIcon;
+```
+
+
 
 #### Add SocialSignIn in CardWrapper component
 
