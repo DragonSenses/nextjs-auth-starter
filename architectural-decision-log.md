@@ -1177,3 +1177,39 @@ export default function CardWrapper({
   )
 }
 ```
+
+## SignIn Form
+
+- [Input | shadcn/ui](https://ui.shadcn.com/docs/components/input)
+
+```sh
+npx shadcn-ui@latest add input
+```
+
+- [Form | shadcn/ui](https://ui.shadcn.com/docs/components/form)
+
+Time to build the form with React Hook Form and Zod.
+
+```sh
+npx shadcn-ui@latest add form
+```
+
+Let's check out what the command installed:
+
+feat: Add form dependencies (react-hook-form, zod)
+
+Dependencies:
+- @hookform/resolvers@3.9.0
+- @radix-ui/react-label@2.1.0
+- react-hook-form@7.52.1
+- zod@3.23.8
+
+```json
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-label": "^2.1.0",
+    // ...
+    "react-hook-form": "^7.52.1",
+    "zod": "^3.23.8"
+  },
+```
