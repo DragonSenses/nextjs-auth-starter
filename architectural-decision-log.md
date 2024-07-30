@@ -1213,3 +1213,188 @@ Dependencies:
     "zod": "^3.23.8"
   },
 ```
+
+### Create a Form (with react-hook-form and zod)
+
+1. **Create a Form Schema**:
+   - Define the shape of your form using a **Zod schema**. This schema will specify the expected structure of your form data.
+   - Example:
+     ```ts
+     import { z } from "zod";
+
+     const formSchema = z.object({
+       username: z.string().min(2).max(50),
+       email: z.string().email(),
+       // Add other form fields here
+     });
+     ```
+
+2. **Define a Form**:
+   - Use the `useForm` hook from **react-hook-form** to create a form instance.
+   - Set up form validation, default values, and other configuration options.
+   - Example:
+     ```tsx
+     "use client"
+     import { zodResolver } from "@hookform/resolvers/zod"
+     import { useForm } from "react-hook-form";
+     import { z } from "zod"
+
+     const formSchema = z.object({
+       username: z.string().min(2).max(50),
+       email: z.string().email(),
+       // Add other form fields here
+     });
+
+     function MyForm() {
+       const form = useForm<z.infer<typeof formSchema>>({
+         resolver: zodResolver(formSchema),
+         defaultValues: {
+           username: "",
+           email: "",
+           // Set other default values
+         },
+       });
+
+       // Handle form submission, field validation, etc.
+       // ...
+     }
+     ```
+
+3. **Build the Form**:
+   - Use the `<Form>` components (provided by your UI library) to build your form.
+   - Include form fields, labels, error messages, and any other necessary components.
+   - Example:
+     ```tsx
+     import { Form, FormField, FormSubmitButton } from "@radix-ui/react-form";
+
+     function MyForm() {
+       // ...
+
+       return (
+         <Form onSubmit={form.handleSubmit(onSubmit)}>
+           <FormField label="Username" name="username" ref={form.register} />
+           <FormField label="Email" name="email" ref={form.register} />
+           {/* Add other form fields */}
+           <FormSubmitButton>Submit</FormSubmitButton>
+         </Form>
+       );
+     }
+     ```
+
+#### Create a form example
+
+Here's the example from the [docs](https://ui.shadcn.com/docs/components/form).
+
+1. Create a form schema
+
+Define the shape of your form using a Zod schema. You can read more about using Zod in the [Zod documentation](https://zod.dev/).
+
+```tsx
+"use client"
+
+import { z } from "zod"
+
+const formSchema = z.object({
+  username: z.string().min(2).max(50),
+})
+```
+
+2. Define a form
+
+Use the `useForm` hook from `react-hook-form` to create a form.
+
+```tsx
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+})
+
+export function ProfileForm() {
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  })
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+  }
+}
+```
+
+Since `FormField` is using a controlled component, you need to provide a default value for the field. See the [React Hook Form](https://react-hook-form.com/docs/usecontroller) docs to learn more about controlled components.
+
+3. Build your form
+
+We can now use the `<Form />` components to build our form.
+
+```tsx
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+})
+
+export function ProfileForm() {
+  // ...
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+  )
+}
+```
+
+4. Done
+
+That's it. You now have a fully accessible form that is type-safe with client-side validation.
+
