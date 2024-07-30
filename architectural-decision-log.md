@@ -1398,3 +1398,70 @@ export function ProfileForm() {
 
 That's it. You now have a fully accessible form that is type-safe with client-side validation.
 
+### Build the SignIn form
+
+Create a global `schemas` folder, with a `index.ts` which will contain our schemas. This will serve as a centralized location for form validation and other schemas.
+
+1. Create a form schema
+
+The `LoginSchema` will have an `email` and a `password`.
+
+feat: Define SignIn schema using zod
+
+`schemas\index.ts`
+```ts
+import { z } from "zod"
+
+export const SignInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+```
+
+2. Define a form
+
+Use the `useForm` hook from `react-hook-form` to create a form.
+
+Inside the `SignInForm` component, let's import what we need and define the form.
+
+feat: Define the sign-in form with useForm hook
+
+- Mark as client component
+- Import zodResolver, useForm, z, and SignInSchema
+- Implement the sign-in form logic
+
+`components\auth\SignInForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { SignInSchema } from '@/schemas';
+import CardWrapper from '@/components/auth/CardWrapper';
+
+export default function SignInForm() {
+
+  // 1. Define the sign-in form.
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      SignInForm
+    </CardWrapper>
+  );
+}
+```
