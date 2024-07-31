@@ -1597,6 +1597,7 @@ We can now test the email input field. Notice that when it validates it renders 
 
 feat: Add email validation error message in schema
 
+`schemas\index.ts`
 ```ts
 import { z } from "zod"
 
@@ -1605,6 +1606,24 @@ export const SignInSchema = z.object({
     message: "Please enter a valid email address."
   }),
   password: z.string().min(1),
+});
+```
+
+Let's also add the validation error message for the password as well, we can add it to the `min()`.
+
+feat: Add password validation error message
+
+`schemas\index.ts`
+```ts
+import { z } from "zod"
+
+export const SignInSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address."
+  }),
+  password: z.string().min(1, {
+    message: "Password must be at least 14 characters long."
+  }),
 });
 ```
 
