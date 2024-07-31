@@ -1607,3 +1607,48 @@ export const SignInSchema = z.object({
   password: z.string().min(1),
 });
 ```
+
+Now add the input form field for the password.
+
+feat(auth): Add password input field in SignInForm
+
+```tsx
+// ...
+export default function SignInForm() {
+  // ...
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField 
+              { /* email input field... */ }
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type='password' placeholder="*******" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Enter your password.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
