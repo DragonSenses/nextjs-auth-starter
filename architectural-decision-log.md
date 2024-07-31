@@ -1590,3 +1590,20 @@ export default function SignInForm() {
   );
 }
 ```
+
+feat: Add validation error handling in SignInForm
+
+We can now test the email input field. Notice that when it validates it renders a `<FormMessage />` which displays the text "invalid email" below the `FormField`. We can change the validation error message through the zod schema by adding an object containing the `message` inside the `email()`.
+
+feat: Add email validation error message in schema
+
+```ts
+import { z } from "zod"
+
+export const SignInSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address."
+  }),
+  password: z.string().min(1),
+});
+```
