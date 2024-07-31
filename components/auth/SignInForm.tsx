@@ -80,6 +80,9 @@ export default function SignInForm() {
               )}
             />
           </div>
+          <Button type="submit" className='w-full'>
+            Sign In
+          </Button>
         </form>
       </Form>
     </CardWrapper>
