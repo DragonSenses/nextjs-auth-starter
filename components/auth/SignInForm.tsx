@@ -46,8 +46,24 @@ export default function SignInForm() {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Input />
-          <Button type="submit">Submit</Button>
+          <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type='email' placeholder="email" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Enter your email.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </form>
       </Form>
     </CardWrapper>
