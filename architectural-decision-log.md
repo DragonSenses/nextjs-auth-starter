@@ -1493,3 +1493,57 @@ export default function SignInForm() {
 
   // ...
 ```
+
+Then we can now build the form in the output by using `<Form />` components. Inside the `CardWrapper` add the `Form` and a native `form` element within. The `Form` component will spread out the values contained within the form made from the `useForm` hook from `react-hook-form`. The `form` element will have the `onSubmit` set to the `form.handleSubmit(onSubmit)`. Finally, render an `Input` and `Button` component within the `form` element.
+
+feat: Add form components for SignInForm
+
+feat(auth): Create initial layout for SignInForm
+
+feat(auth): Handle form submission in SignInForm
+
+```tsx
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+export default function SignInForm() {
+
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    console.log(values)
+  }
+
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <Input />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
+
