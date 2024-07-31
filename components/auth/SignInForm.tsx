@@ -7,7 +7,7 @@ import { z } from "zod"
 
 import { SignInSchema } from '@/schemas';
 import CardWrapper from '@/components/auth/CardWrapper';
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 export default function SignInForm() {
 
@@ -45,7 +45,7 @@ export default function SignInForm() {
       showSocial={true}
     >
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Input />
           <Button type="submit">Submit</Button>
         </form>
