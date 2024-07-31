@@ -1465,3 +1465,31 @@ export default function SignInForm() {
   );
 }
 ```
+
+After defining the sign-in form, define the submit handler which will log the values.
+
+feat: Define the sign-in submit handler
+
+```tsx
+import { SignInSchema } from '@/schemas';
+
+export default function SignInForm() {
+
+  // 1. Define the sign-in form.
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    // Do something with the form values.
+    // This will be type-safe and validated.
+    console.log(values)
+  }
+
+  // ...
+```
