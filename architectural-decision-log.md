@@ -1547,3 +1547,46 @@ export default function SignInForm() {
 }
 ```
 
+#### SignInForm input fields
+
+Now we need to add our inputs: email and password.
+
+feat(auth): Create email input field in SignInForm
+
+```tsx
+// ...
+export default function SignInForm() {
+  // ...
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type='email' placeholder="email" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Enter your email.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
