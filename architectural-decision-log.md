@@ -1547,6 +1547,33 @@ export default function SignInForm() {
 }
 ```
 
+Before adding the input fields let's create a `div` container for them with the styles `space-y-4`. Then right below the input field container `div` we can add the submit button.
+
+feat: Implement submit button in SignInForm
+
+feat(auth): Add sign-in submit button
+
+```tsx
+// ...
+export default function SignInForm() {
+  // ...
+  return (
+    <CardWrapper>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            { /* Input fields */ }
+          </div>
+          <Button type="submit" className='w-full'>
+            Sign In
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
+
 #### SignInForm input fields
 
 Now we need to add our inputs: email and password.
@@ -1671,3 +1698,4 @@ export default function SignInForm() {
   );
 }
 ```
+
