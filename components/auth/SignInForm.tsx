@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -54,11 +53,8 @@ export default function SignInForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type='email' placeholder="email" {...field} />
+                    <Input type='email' placeholder="Enter your email address" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Enter your email.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -70,17 +66,14 @@ export default function SignInForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type='password' placeholder="*******" {...field} />
+                    <Input type='password' placeholder="**************" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Enter your password.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button type="submit" className='w-full'>
+          <Button type="submit" className='w-full bg-sky-500'>
             Sign In
           </Button>
         </form>
