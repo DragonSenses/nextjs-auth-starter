@@ -1728,6 +1728,32 @@ In the updated schema:
 4. **Refinement**:
    - Added a refinement to ensure that the password length is greater than zero (`value.length > 0`), which is essential for a required field.
 
+Need to add an error message to clearly communicate to the users the password requirements.
+
+feat: Improve password requirement communication
+
+Added clear instructions to the error message in the `SignInSchema` regex pattern, ensuring users understand the required criteria for their password.
+
+```ts
+import { z } from 'zod';
+
+export const SignInSchema = z.object({
+  email: z.string().email({
+    message: 'Please enter a valid email address.',
+  }),
+  password: z
+    .string()
+    .min(14, 'Password must be at least 14 characters long')
+    .max(32, 'Password must be a maximum of 32 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={[}]|:;\"'<,>.])[A-Za-z\d!@#$%^&*()_+={[}]|:;\"'<,>.]{14,}$/, {
+      message: 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
+    })
+    .refine((value) => value.length > 0, {
+      message: 'Password is required',
+    }),
+});
+```
+
 ##### SignInForm password form field
 
 Now add the input form field for the password.

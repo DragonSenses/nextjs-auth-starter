@@ -8,7 +8,9 @@ export const SignInSchema = z.object({
     .string()
     .min(14, 'Password must be at least 14 characters long')
     .max(32, 'Password must be a maximum of 32 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={[}]|:;\"'<,>.])[A-Za-z\d!@#$%^&*()_+={[}]|:;\"'<,>.]{14,}$/)
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={[}]|:;\"'<,>.])[A-Za-z\d!@#$%^&*()_+={[}]|:;\"'<,>.]{14,}$/, {
+      message: 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
+    })
     .refine((value) => value.length > 0, {
       message: 'Password is required',
     }),
