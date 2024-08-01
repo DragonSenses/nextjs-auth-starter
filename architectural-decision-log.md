@@ -1794,3 +1794,100 @@ export default function SignInForm() {
 }
 ```
 
+## Form components
+
+Now I want to display feedback messages to the user in the sign-in form. The `FormError` and `FormSuccess` components will receieve a message prop (feedback message) and render it appropriately with the relevant styles.
+
+Create these components in a new folder `/components/form`.
+
+### FormError component
+
+The `FormError` will contain the `message` prop, which will be used to conditionally render the output.
+
+feat: Define prop types for FormError component
+
+`components\form\FormError.tsx`
+```tsx
+import React from 'react';
+
+interface FormErrorProps {
+  message?: string;
+}
+
+export default function FormError({
+  message,
+}: FormErrorProps) {
+  return (
+    <div>FormError</div>
+  )
+}
+```
+
+Now render the `FormError` above the submit button in the `SignInForm`.
+
+feat: Render FormError component in SignInForm
+
+```tsx
+import FormError from '@/components/form/FormError';
+// ...
+export default function SignInForm() {
+  // ...
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField
+              // email form field
+            />
+            <FormField
+              // password form field
+            />
+          </div>
+
+          <FormError />
+
+          <Button type="submit" className='w-full bg-sky-500'>
+            Sign In
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
+
+Now back in the `FormError` component, render the output if the `message` is truthy otherwise render null.
+
+feat: Conditionally render FormError component
+
+- Added conditional rendering logic to display error messages in the FormError component.
+- Incorporated the ShieldAlert icon from the 'lucide-react' library
+- Styled the error message container for better visibility and better convey its purpose
+
+```tsx
+import { ShieldAlert } from 'lucide-react';
+import React from 'react';
+
+interface FormErrorProps {
+  message?: string;
+}
+
+export default function FormError({
+  message,
+}: FormErrorProps) {
+  return message ? (
+    <div className="flex items-center p-3 gap-x-2 bg-destructive/15 text-destructive text-sm">
+      <ShieldAlert className='h-4 w-4' />
+      <p>{message}</p>
+    </div>
+  ) : null;
+}
+```
+
+### FormSuccess component
