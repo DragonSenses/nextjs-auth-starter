@@ -1578,6 +1578,8 @@ export default function SignInForm() {
 
 Now we need to add our inputs: email and password.
 
+##### SignInForm email form field
+
 feat(auth): Create email input field in SignInForm
 
 ```tsx
@@ -1618,6 +1620,8 @@ export default function SignInForm() {
 }
 ```
 
+##### SignInForm input field validation
+
 feat: Add validation error handling in SignInForm
 
 We can now test the email input field. Notice that when it validates it renders a `<FormMessage />` which displays the text "invalid email" below the `FormField`. We can change the validation error message through the zod schema by adding an object containing the `message` inside the `email()`.
@@ -1653,6 +1657,78 @@ export const SignInSchema = z.object({
   }),
 });
 ```
+
+###### Strengthen password requirements
+
+docs: Add robust password requirements
+
+Note: I've chosen a minimum password length of 14 characters, prioritizing user security and safety. It may seem user-unfriendly but is done with an abundance of caution.
+
+- [How long should my password be? | Bitwarden](https://bitwarden.com/blog/how-long-should-my-password-be/)
+
+While here let's also strengthen the password requirements. According to the [NIST: National Institute of Standards and Technology](https://bitwarden.com/blog/3-tips-from-nist-to-keep-passwords-secure/), password length has been found to be a primary factor in characterizing password strength.
+
+To strengthen the security of your online information, ensure your passwords are a random mix of at least 14 to 16 characters.
+
+Password Length | Time to Crack
+----------------|--------------
+14-16 characters | centuries
+11-13 | months to years
+8-10 | hours to days
+5-7 | seconds to minutes
+
+**Password requirements:**
+
+- 14-16 characters long
+- Contain at least one character from the four character sets:
+  1. Numerical characters such as 12345
+  2. Lowercase characters such as abcde
+  3. Uppercase characters such as ABCDE
+  4. Special characters such as !$%&?
+
+To add uppercase and lowercase letter requirements, as well as a special character requirement to the `SignInSchema`, refine the validation for the `password` field. Here's the updated schema:
+
+feat(SignInSchema): Strengthen password validation
+
+- Increase minimum length to 14 characters
+- Set maximum length to 32 characters
+- Enforce requirements for at least one of each: an uppercase letter, a lowercase letter, a number, and a special character.
+- Ensure password is not empty
+
+```ts
+import { z } from 'zod';
+
+export const SignInSchema = z.object({
+  email: z.string().email({
+    message: 'Please enter a valid email address.',
+  }),
+  password: z
+    .string()
+    .min(14, 'Password must be at least 14 characters long')
+    .max(32, 'Password must be a maximum of 32 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={[}]|:;\"'<,>.])[A-Za-z\d!@#$%^&*()_+={[}]|:;\"'<,>.]{14,}$/)
+    .refine((value) => value.length > 0, {
+      message: 'Password is required',
+    }),
+});
+```
+
+In the updated schema:
+- The `.regex(...)` method enforces the requirements for at least one uppercase letter, one lowercase letter, one number, and one special character.
+- The `.refine(...)` method ensures that the password is not empty.
+
+1. **Minimum Length**: Set a minimum length of 14 characters for the password, which is a good practice to enhance security.
+
+2. **Maximum Length**: Capped the maximum length at 32 characters, preventing excessively long passwords.
+
+3. **Regex Pattern**:
+   - Regex pattern ensures that the password contains at least one lowercase letter (`(?=.*[a-z]`)), one uppercase letter (`(?=.*[A-Z]`)), one digit (`(?=.*\d)`), and one special character (`(?=.*[!@#$%^&*()_+={[}]|:;\"'<,>.])`).
+   - It allows any combination of these characters, as long as the total length is within the specified range.
+
+4. **Refinement**:
+   - Added a refinement to ensure that the password length is greater than zero (`value.length > 0`), which is essential for a required field.
+
+##### SignInForm password form field
 
 Now add the input form field for the password.
 
