@@ -1919,3 +1919,47 @@ export default function FormSuccess({
   ) : null;
 }
 ```
+
+feat: Render FormSuccess component in SignInForm
+
+```tsx
+import FormSuccess from '@/components/form/FormSuccess';
+// ...
+export default function SignInForm() {
+  // ...
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField
+              // email form field
+            />
+            <FormField
+              // password form field
+            />
+          </div>
+
+          <FormError />
+          <FormSuccess />
+          <Button type="submit" className='w-full bg-sky-500'>
+            Sign In
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
+
+Now we can view the `FormError` and `FormSuccess` components by passing in a `message` prop.
+
+```tsx
+          <FormError message='Email already taken!'/>
+          <FormSuccess message='Email sent!'/>
+```
