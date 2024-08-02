@@ -1,6 +1,12 @@
 import React from 'react';
 
-export default function FormSuccess() {
+interface FormSuccessProps {
+  message?: string;
+}
+
+export default function FormSuccess({
+  message,
+}: FormSuccessProps) {
   return (
     <div>FormSuccess</div>
   )
