@@ -8,6 +8,7 @@ import { z } from "zod"
 import { SignInSchema } from '@/schemas';
 import CardWrapper from '@/components/auth/CardWrapper';
 import FormError from '@/components/form/FormError';
+import FormSuccess from '@/components/form/FormSuccess';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -75,6 +76,7 @@ export default function SignInForm() {
             />
           </div>
           <FormError />
+          <FormSuccess />
           <Button type="submit" className='w-full bg-sky-500'>
             Sign In
           </Button>
