@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useTransition } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import signIn from '@/actions/signIn';
 
 export default function SignInForm() {
+  const [isPending, startTransition] = useTransition();
 
   // 1. Define the sign-in form.
   const form = useForm<z.infer<typeof SignInSchema>>({
@@ -37,8 +38,10 @@ export default function SignInForm() {
     // Do something with the form values.
     // This will be type-safe and validated.
     console.log(values);
-    // Execute the user sign-in server action
-    signIn(values);
+    startTransition(() => {
+      // Execute the user sign-in server action
+      signIn(values);
+    });
   }
 
   return (
