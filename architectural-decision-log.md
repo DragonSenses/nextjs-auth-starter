@@ -1963,3 +1963,61 @@ Now we can view the `FormError` and `FormSuccess` components by passing in a `me
           <FormError message='Email already taken!'/>
           <FormSuccess message='Email sent!'/>
 ```
+
+## Server Actions
+
+- [Server Actions and Mutations | Nextjs docs](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
+
+Server Actions are asynchronous functions that are executed on the server. They can be used in Server and Client Components to handle form submissions and data mutations in Next.js applications.
+
+Create an `/actions` folder at the root of the project with a file named `signIn.ts`.
+
+Inside has a function `signIn` that takes in `values` parameter and `console.log(values)`. Let's import what `z` and `SignInSchema` to be ensure type safety and validation `values`.
+
+feat(signIn): Add type safety and validation
+
+- Validate input using zod schema
+- Ensure proper type inference for 'values'
+
+`actions\signIn.ts`
+```ts
+"use server";
+
+import { z } from "zod";
+import { SignInSchema } from "@/schemas";
+
+export default function signIn(values: z.infer<typeof SignInSchema>) {
+  console.log(values);
+}
+```
+
+Now inside our `SignInForm` we can import the server action and call it within the submit handler.
+
+feat: Execute signIn server action in SignInForm
+
+`components\auth\SignInForm.tsx`
+```tsx
+import signIn from '@/actions/signIn';
+
+export default function SignInForm() {
+
+  // 1. Define the sign-in form.
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    // Do something with the form values.
+    // This will be type-safe and validated.
+    console.log(values);
+    // Execute the user sign-in server action
+    signIn(values);
+  }
+```
+
+On submit button press we should be able to see the values logged on the server (inside the terminal).
