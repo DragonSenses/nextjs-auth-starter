@@ -1882,7 +1882,7 @@ export default function FormError({
   message,
 }: FormErrorProps) {
   return message ? (
-    <div className="flex items-center p-3 gap-x-2 bg-destructive/15 text-destructive text-sm">
+    <div className="flex items-center p-3 gap-x-2 bg-destructive/15 text-destructive text-sm rounded-md">
       <ShieldAlert className='h-4 w-4' />
       <p>{message}</p>
     </div>
