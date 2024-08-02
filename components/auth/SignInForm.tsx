@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import signIn from '@/actions/signIn';
 
 export default function SignInForm() {
 
@@ -35,7 +36,9 @@ export default function SignInForm() {
   function onSubmit(values: z.infer<typeof SignInSchema>) {
     // Do something with the form values.
     // This will be type-safe and validated.
-    console.log(values)
+    console.log(values);
+    // Execute the user sign-in server action
+    signIn(values);
   }
 
   return (
