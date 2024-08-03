@@ -64,8 +64,10 @@ export default function SignInForm() {
                     <Input
                       type='email'
                       placeholder="Enter your email address"
+                      aria-label="Email address"
                       disabled={isPending}
-                      {...field} />
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,8 +83,10 @@ export default function SignInForm() {
                     <Input
                       type='password'
                       placeholder="**************"
+                      aria-label="Password"
                       disabled={isPending}
-                      {...field} />
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -92,8 +96,8 @@ export default function SignInForm() {
           <FormError />
           <FormSuccess />
           <Button
-            disabled={isPending}
             type="submit"
+            disabled={isPending}
             className='w-full bg-sky-500'
           >
             Sign In
