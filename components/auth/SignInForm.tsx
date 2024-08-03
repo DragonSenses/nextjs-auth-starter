@@ -61,7 +61,11 @@ export default function SignInForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type='email' placeholder="Enter your email address" {...field} />
+                    <Input
+                      type='email'
+                      placeholder="Enter your email address"
+                      disabled={isPending}
+                      {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -74,7 +78,11 @@ export default function SignInForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type='password' placeholder="**************" {...field} />
+                    <Input
+                      type='password'
+                      placeholder="**************"
+                      disabled={isPending}
+                      {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,7 +91,11 @@ export default function SignInForm() {
           </div>
           <FormError />
           <FormSuccess />
-          <Button type="submit" className='w-full bg-sky-500'>
+          <Button
+            disabled={isPending}
+            type="submit"
+            className='w-full bg-sky-500'
+          >
             Sign In
           </Button>
         </form>
