@@ -2021,3 +2021,130 @@ export default function SignInForm() {
 ```
 
 On submit button press we should be able to see the values logged on the server (inside the terminal).
+
+Note: An alternative to server action is through API routes. Here is how it would look like in the submit handler:
+
+```tsx
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    console.log(values);
+    axios.post("/some/api/route", values)
+      .then()
+      .catch(); 
+  }
+```
+
+### useTransition hook
+
+[`useTransition`](https://react.dev/reference/react/useTransition) is a React Hook that lets you update the state without blocking the UI.
+
+```jsx
+const [isPending, startTransition] = useTransition()
+```
+
+Now let's wrap the server action call inside the submit handler with a `useTransition`.
+
+feat: Add useTransition hook for form submission
+
+- Use useTransition to handle asynchronous form submission
+- Execute the user sign-in server action within the transition
+
+```tsx
+import React, { useTransition } from 'react';
+
+export default function SignInForm() {
+  const [isPending, startTransition] = useTransition();
+
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    console.log(values);
+    startTransition(() => {
+      signIn(values);
+    });
+  }
+```
+
+Use the `isPending` to disable the components (inputs).
+
+feat: Disable inputs and button while form pending
+
+```tsx
+export default function SignInForm() {
+  const [isPending, startTransition] = useTransition();
+
+  // 1. Define the sign-in form.
+  const form = useForm<z.infer<typeof SignInSchema>>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    console.log(values);
+    startTransition(() => {
+      signIn(values);
+    });
+  }
+
+  return (
+    <CardWrapper
+      backButtonHref="/auth/register"
+      backButtonLabel="Don't have an account?"
+      headerLabel="Welcome back"
+      showSocial={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='email'
+                      placeholder="Enter your email address"
+                      disabled={isPending}
+                      {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='password'
+                      placeholder="**************"
+                      disabled={isPending}
+                      {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormError />
+          <FormSuccess />
+          <Button
+            disabled={isPending}
+            type="submit"
+            className='w-full bg-sky-500'
+          >
+            Sign In
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
