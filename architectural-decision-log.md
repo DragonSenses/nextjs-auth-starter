@@ -583,7 +583,7 @@ interface CardWrapperProps {
   backButtonHref: string;
   backButtonLabel: string;
   headerLabel: string;
-  showSocial?: boolean;
+  showSocialSignIn?: boolean;
 };
 
 export default function CardWrapper({
@@ -591,7 +591,7 @@ export default function CardWrapper({
   backButtonHref,
   backButtonLabel,
   headerLabel,
-  showSocial,
+  showSocialSignIn,
 }: CardWrapperProps) {
   return (
     <div>CardWrapper</div>
@@ -649,10 +649,10 @@ feat: Implement SignInForm using CardWrapper
 export default function SignInForm() {
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       SignInForm
     </CardWrapper>
@@ -739,7 +739,7 @@ interface CardWrapperProps {
   backButtonHref: string;
   backButtonLabel: string;
   headerLabel: string;
-  showSocial?: boolean;
+  showSocialSignIn?: boolean;
 };
 
 export default function CardWrapper({
@@ -747,7 +747,7 @@ export default function CardWrapper({
   backButtonHref,
   backButtonLabel,
   headerLabel,
-  showSocial,
+  showSocialSignIn,
 }: CardWrapperProps) {
   return (
     <Card className='w-96 shadow-md'>
@@ -1037,10 +1037,8 @@ export default function CardWrapper({
   backButtonHref,
   backButtonLabel,
   headerLabel,
-  showSocial,
+  showSocialSignIn = true,
 }: CardWrapperProps) {
-
-  const showSocialSignIn: boolean = true;
 
   return (
     <Card className='w-96 shadow-md'>
@@ -1050,7 +1048,7 @@ export default function CardWrapper({
       <CardContent>
         {children}
       </CardContent>
-      {showSocialSignIn && (
+      {showSocialSignInSignIn && (
         <CardFooter>
           <SocialSignIn />
         </CardFooter>
@@ -1149,10 +1147,8 @@ export default function CardWrapper({
   backButtonHref,
   backButtonLabel,
   headerLabel,
-  showSocial,
+  showSocialSignIn,
 }: CardWrapperProps) {
-
-  const showSocialSignIn: boolean = true;
 
   return (
     <Card className='w-96 shadow-md'>
@@ -1162,7 +1158,7 @@ export default function CardWrapper({
       <CardContent>
         {children}
       </CardContent>
-      {showSocialSignIn && (
+      {showSocialSignInSignIn && (
         <CardFooter>
           <SocialSignIn />
         </CardFooter>
@@ -1455,10 +1451,10 @@ export default function SignInForm() {
 
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       SignInForm
     </CardWrapper>
@@ -1530,10 +1526,10 @@ export default function SignInForm() {
 
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -1587,10 +1583,10 @@ export default function SignInForm() {
   // ...
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -1762,10 +1758,10 @@ export default function SignInForm() {
   // ...
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -1834,10 +1830,10 @@ export default function SignInForm() {
   // ...
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -1929,10 +1925,10 @@ export default function SignInForm() {
   // ...
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -2106,10 +2102,10 @@ export default function SignInForm() {
 
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -2287,5 +2283,21 @@ export default function SignInForm() {
       </Form>
     </CardWrapper>
   );
+}
+```
+
+## Sign-Up page
+
+Create the sign-up page: `/app/auth/signup/page.tsx`.
+
+feat: Create SignUpPage component
+
+```tsx
+import React from 'react';
+
+export default function SignUpPage() {
+  return (
+    <div>SignUpPage</div>
+  )
 }
 ```
