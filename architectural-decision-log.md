@@ -2169,3 +2169,68 @@ export default function SignInForm() {
 }
 ```
 
+### Validating fields in the server
+
+Field validation refers to the process of ensuring that user input meets specific criteria or constraints. When building forms or collecting data from users, validating fields helps maintain data integrity and prevents incorrect or malicious input. Here are some common aspects of field validation:
+
+1. **Data Type Validation**:
+   - Ensuring that the input matches the expected data type (e.g., numbers, dates, strings).
+   - For example, validating that an age field contains a numeric value.
+
+2. **Required Fields**:
+   - Marking certain fields as mandatory, so users must provide valid input.
+   - For instance, a sign-up form might require an email address.
+
+3. **Length Constraints**:
+   - Checking if input length falls within acceptable limits (e.g., minimum and maximum characters).
+   - Verifying that a password meets complexity requirements.
+
+4. **Format Validation**:
+   - Validating input based on specific patterns (e.g., email addresses, phone numbers, URLs).
+   - Ensuring that an email field contains a valid email format.
+
+5. **Range Validation**:
+   - Verifying that numeric input falls within a specified range (e.g., age between 18 and 99).
+   - Checking if a date input is within a valid date range.
+
+6. **Custom Rules**:
+   - Implementing custom validation logic based on business rules or specific use cases.
+   - For example, ensuring that a username is unique in a database.
+
+Now let's implement the signIn server action.
+
+We will use zod's [safeParse](https://zod.dev/?id=safeparse) method to validate the fields within the `SignInSchema`. The method returns an object containing either the successfully parsed data or a ZodError instance containing detailed information about the validation problems.
+
+After using `safeParse(values)`, return an object with either a success or an error message.
+
+feat: Validate user sign-in data using schema
+
+`actions\signIn.ts`
+```ts
+"use server";
+
+import { z } from "zod";
+import { SignInSchema } from "@/schemas";
+
+/**
+ * Validates user sign-in data using the provided schema.
+ *
+ * @param values - User input data to validate.
+ * @returns An object with either a success message or an error message.
+ */
+export default function signIn(values: z.infer<typeof SignInSchema>) {
+  console.log(values);
+
+  const parsedValues = SignInSchema.safeParse(values);
+
+  if (!parsedValues.success) {
+    return {
+      error: "Invalid fields!",
+    };
+  }
+
+  return {
+    success: "Sign in successful!",
+  };
+}
+```
