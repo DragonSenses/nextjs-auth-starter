@@ -57,10 +57,10 @@ export default function SignInForm() {
 
   return (
     <CardWrapper
-      backButtonHref="/auth/register"
+      backButtonHref="/auth/signup"
       backButtonLabel="Don't have an account?"
       headerLabel="Welcome back"
-      showSocial={true}
+      showSocialSignIn={true}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
