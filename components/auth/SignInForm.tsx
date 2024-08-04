@@ -38,6 +38,9 @@ export default function SignInForm() {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof SignInSchema>) {
     console.log(values);
+    // Reset success and error messages before sign-in server action
+    setSuccessMessage("");
+    setErrorMessage("");
     // Handle form submission:
     //    - Validate the form values (type-safe and validated).
     //    - Execute the user sign-in server action.
@@ -101,8 +104,8 @@ export default function SignInForm() {
               )}
             />
           </div>
-          <FormError />
-          <FormSuccess />
+          <FormError message={errorMessage} />
+          <FormSuccess message={successMessage} />
           <Button
             type="submit"
             disabled={isPending}
