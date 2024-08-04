@@ -19,7 +19,7 @@ interface CardWrapperProps {
   backButtonHref: string;
   backButtonLabel: string;
   headerLabel: string;
-  showSocial?: boolean;
+  showSocialSignIn?: boolean;
 };
 
 export default function CardWrapper({
@@ -27,10 +27,8 @@ export default function CardWrapper({
   backButtonHref,
   backButtonLabel,
   headerLabel,
-  showSocial,
+  showSocialSignIn = true,
 }: CardWrapperProps) {
-
-  const showSocialSignIn: boolean = true;
 
   return (
     <Card className='w-96 shadow-md'>
