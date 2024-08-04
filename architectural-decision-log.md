@@ -2042,6 +2042,20 @@ Note: An alternative to server action is through API routes. Here is how it woul
 const [isPending, startTransition] = useTransition()
 ```
 
+The `useTransition` hook in React aims to address the issue of UI responsiveness during asynchronous operations, such as data fetching or form submissions. It allows you to create smooth transitions between different UI states, like showing a loading spinner while waiting for data or displaying a success message after form submission.
+
+Here's how it works:
+
+1. **Smooth Transitions**: When you use `useTransition`, React will delay the rendering of the new UI state until the transition is complete. This prevents abrupt changes and provides a smoother experience for users.
+
+2. **Graceful Loading States**: You can use `useTransition` to handle loading states elegantly. For example, when fetching data from an API, you can show a loading spinner while transitioning from the current UI to the loading state.
+
+3. **Optimized Rendering**: By delaying the rendering of new UI elements, `useTransition` helps avoid unnecessary re-renders. This optimization can improve performance, especially when dealing with complex components.
+
+Note that `useTransition` is part of React's Concurrent Mode, which is still experimental. But it's exciting to see how it evolves and becomes more widely adopted.
+
+#### Add useTransition to sign-in server action
+
 Now let's wrap the server action call inside the submit handler with a `useTransition`.
 
 feat: Add useTransition hook for form submission
@@ -2154,3 +2168,4 @@ export default function SignInForm() {
   );
 }
 ```
+
