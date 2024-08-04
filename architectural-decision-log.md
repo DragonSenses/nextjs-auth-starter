@@ -2218,7 +2218,7 @@ import { SignInSchema } from "@/schemas";
  * @param values - User input data to validate.
  * @returns An object with either a success message or an error message.
  */
-export default function signIn(values: z.infer<typeof SignInSchema>) {
+export default async function signIn(values: z.infer<typeof SignInSchema>) {
   console.log(values);
 
   const parsedValues = SignInSchema.safeParse(values);
