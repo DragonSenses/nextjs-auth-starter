@@ -2234,3 +2234,58 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
   };
 }
 ```
+
+### Display success or error message in SignInForm.
+
+Now in the `SignInForm`, add two states: `successMessage` and `errorMessage`.
+
+feat: Handle sign-in response in SignInForm
+
+- Display success message when sign-in is successful.
+- Show error message when sign-in fails due to invalid fields.
+
+feat: Show sign-in validation messages in the form
+
+- Reset success and error messages before executing the sign-in server action.
+- Pass success and error messages to relevant components for display.
+- Helps the user understand the outcome of their sign-in attempt
+
+```tsx
+import React, { useState, useTransition } from 'react';
+
+export default function SignInForm() {
+  const [successMessage, setSuccessMessage] = useState<string | undefined>("");
+  const [errorMessage, setErrorMessage] = useState<string | undefined>("");
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof SignInSchema>) {
+    console.log(values);
+    // Reset success and error messages before sign-in server action
+    setSuccessMessage("");
+    setErrorMessage("");
+    // Handle form submission:
+    //    - Validate the form values (type-safe and validated).
+    //    - Execute the user sign-in server action.
+    startTransition(() => {
+      // Execute the user sign-in server action
+      signIn(values)
+        .then((data) => {
+          // Update success or error messages based on the server response
+          setSuccessMessage(data.success);
+          setErrorMessage(data.error);
+        });
+    });
+  }
+
+  return ( 
+    <CardWrapper>
+      <Form {...form}>
+        { /* FormFields, Inputs... */}
+          <FormError message={errorMessage} />
+          <FormSuccess message={successMessage} />
+        { /* Submit Button... */}
+      </Form>
+    </CardWrapper>
+  );
+}
+```
