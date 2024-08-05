@@ -2302,7 +2302,7 @@ export default function SignUpPage() {
 }
 ```
 
-### SignUpSchema
+## SignUpSchema
 
 Similar to `SignInSchema`, with just another added field of name
 
@@ -2365,5 +2365,32 @@ export const SignUpSchema = z.object({
     message: 'Please enter a valid name',
   }),
 });
-
 ```
+
+## Sign-Up Form
+
+Now build the register or `SignUpForm` component.
+
+```tsx
+import React from 'react';
+
+export default function SignUpForm() {
+  return (
+    <div>SignUpForm</div>
+  )
+}
+```
+
+Let's follow the steps on building a form with `react-hook-form` and `zod`.
+
+1. **Create a Form Schema**:
+   - Define the shape of your form using a **Zod schema**. This schema will specify the expected structure of your form data.
+
+2. **Define a Form**:
+   - Use the `useForm` hook from **react-hook-form** to create a form instance.
+   - Set up form validation, default values, and other configuration options.
+
+3. **Build the Form**
+   - Use the `<Form>` components (provided by your UI library) to build your form.
+   - Include form fields, labels, error messages, and any other necessary components.
+
