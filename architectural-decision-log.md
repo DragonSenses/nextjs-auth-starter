@@ -2423,3 +2423,39 @@ export const SignUpSchema = z.object({
 });
 ```
 
+### 2. Define a SignUp form instance
+
+feat: Define the sign-up form with useForm hook
+
+- Mark as client component
+- Import zodResolver, useForm, z, and SignInSchema
+- Use the `useForm` hook from "react-hook-form" to create a form instance.
+- Set up form validation, default values, and other configuration options.
+
+```tsx
+"use client";
+
+import React from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { SignUpSchema } from '@/schemas';
+
+export default function SignUpPage() {
+
+  // 1. Define the sign-up form.
+  const form = useForm<z.infer<typeof SignUpSchema>>({
+    resolver: zodResolver(SignUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  return (
+    <div>SignUpPage</div>
+  )
+}
+```
