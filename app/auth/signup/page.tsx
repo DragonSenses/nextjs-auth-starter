@@ -8,6 +8,20 @@ import { z } from "zod";
 import { SignUpSchema } from '@/schemas';
 import signUp from '@/actions/signUp';
 
+import CardWrapper from '@/components/auth/CardWrapper';
+import FormError from '@/components/form/FormError';
+import FormSuccess from '@/components/form/FormSuccess';
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
 export default function SignUpPage() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>("");
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
@@ -43,7 +57,85 @@ export default function SignUpPage() {
     });
   }
 
+  // 3. Build the form
   return (
-    <div>SignUpPage</div>
-  )
+    <CardWrapper
+      backButtonHref="/auth/signin"
+      backButtonLabel="Already have an account?"
+      headerLabel="Create an account"
+      showSocialSignIn={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='email'
+                      placeholder="Enter your email address"
+                      aria-label="Email address"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='password'
+                      placeholder="**************"
+                      aria-label="Password"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your username"
+                      aria-label="username"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormError message={errorMessage} />
+          <FormSuccess message={successMessage} />
+          <Button
+            type="submit"
+            disabled={isPending}
+            className='w-full bg-sky-500'
+          >
+            Sign Up
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
 }
