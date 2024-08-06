@@ -23,7 +23,7 @@ export const SignUpSchema = z.object({
     message: 'Please enter a valid email address.',
   }),
   password: PasswordSchema,
-  name: z.string().min(1, {
-    message: 'Please enter a valid name',
+  username: z.string().min(1, {
+    message: 'Please enter a valid username',
   }),
 });

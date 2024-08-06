@@ -2325,8 +2325,8 @@ export const SignUpSchema = z.object({
     .refine((value) => value.length > 0, {
       message: 'Password is required',
     }),
-  name: z.string().min(1, {
-    message: 'Please enter a valid name',
+  username: z.string().min(1, {
+    message: 'Please enter a valid username',
   }),
 });
 ```
@@ -2361,8 +2361,8 @@ export const SignUpSchema = z.object({
     message: 'Please enter a valid email address.',
   }),
   password: PasswordSchema,
-  name: z.string().min(1, {
-    message: 'Please enter a valid name',
+  username: z.string().min(1, {
+    message: 'Please enter a valid username',
   }),
 });
 ```
@@ -2420,8 +2420,8 @@ export const SignUpSchema = z.object({
     message: 'Please enter a valid email address.',
   }),
   password: PasswordSchema,
-  name: z.string().min(1, {
-    message: 'Please enter a valid name',
+  username: z.string().min(1, {
+    message: 'Please enter a valid username',
   }),
 });
 ```
@@ -2455,7 +2455,7 @@ export default function SignUpPage() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
     },
@@ -2547,4 +2547,5 @@ export default function SignUpPage() {
   )
 }
 ```
+
 
