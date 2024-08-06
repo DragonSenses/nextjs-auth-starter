@@ -2396,6 +2396,9 @@ Let's follow the steps on building a form with `react-hook-form` and `zod`.
 
 ### 1. Create a SignUp form schema
 
+1. **Create a Form Schema**:
+   - Define the shape of your form using a **Zod schema**. This schema will specify the expected structure of your form data.
+
 feat: Define sign-up schema using zod
 
 ```tsx
@@ -2424,6 +2427,10 @@ export const SignUpSchema = z.object({
 ```
 
 ### 2. Define a SignUp form instance
+
+2. **Define a Form**:
+   - Use the `useForm` hook from **react-hook-form** to create a form instance.
+   - Set up form validation, default values, and other configuration options.
 
 feat: Define the sign-up form with useForm hook
 
@@ -2498,17 +2505,46 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
 
 feat: Implement sign-up form submission handler
 
+- Integrate useState and useTransition hooks from React
+- Manage successMessage and errorMessage states
+- Initialize isPending flag for smoother transitions
+- Implement form submission handler for sign-up page
+
 ```tsx
+import React, { useState, useTransition } from 'react';
+
+import signUp from '@/actions/signUp';
+
+export default function SignUpPage() {
+  const [successMessage, setSuccessMessage] = useState<string | undefined>("");
+  const [errorMessage, setErrorMessage] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+
+  // 1. Define the sign-up form...
+
+  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof SignUpSchema>) {
     console.log(values);
+    // Reset success and error messages before sign-up server action
     setSuccessMessage("");
     setErrorMessage("");
+    // Handle form submission:
+    //    - Validate the form values (type-safe and validated).
+    //    - Execute the user sign-up server action.
     startTransition(() => {
+      // Execute the user sign-up server action
       signUp(values)
         .then((data) => {
+          // Update success or error messages based on the server response
           setSuccessMessage(data.success);
           setErrorMessage(data.error);
         });
     });
   }
+
+  return (
+    <div>SignUpPage</div>
+  )
+}
 ```
+
