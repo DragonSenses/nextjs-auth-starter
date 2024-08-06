@@ -2449,7 +2449,7 @@ import { z } from "zod";
 
 import { SignUpSchema } from '@/schemas';
 
-export default function SignUpPage() {
+export default function SignUpForm() {
 
   // 1. Define the sign-up form.
   const form = useForm<z.infer<typeof SignUpSchema>>({
@@ -2462,7 +2462,7 @@ export default function SignUpPage() {
   });
 
   return (
-    <div>SignUpPage</div>
+    <div>SignUpForm</div>
   )
 }
 ```
@@ -2515,7 +2515,7 @@ import React, { useState, useTransition } from 'react';
 
 import signUp from '@/actions/signUp';
 
-export default function SignUpPage() {
+export default function SignUpForm() {
   const [successMessage, setSuccessMessage] = useState<string | undefined>("");
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -2543,7 +2543,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div>SignUpPage</div>
+    <div>SignUpForm</div>
   )
 }
 ```
@@ -2579,7 +2579,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-export default function SignUpPage() {
+export default function SignUpForm() {
   // 1. Define the sign-up form...
   // 2. Define a submit handler...
 
@@ -2664,5 +2664,23 @@ export default function SignUpPage() {
       </Form>
     </CardWrapper>
   );
+}
+```
+
+refactor: Extract SignUpForm component from SignUpPage
+
+- Move the sign-up form logic and UI into a dedicated component
+- Improve code organization and maintainability
+
+### Render the sign-up form
+
+```tsx
+import React from 'react';
+import SignUpForm from '@/components/auth/SignUpForm';
+
+export default function SignUpPage() {
+  return (
+    <SignUpForm />
+  )
 }
 ```
