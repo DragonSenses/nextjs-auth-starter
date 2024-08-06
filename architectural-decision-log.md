@@ -2304,7 +2304,7 @@ export default function SignUpPage() {
 
 ## SignUpSchema
 
-Similar to `SignInSchema`, with just another added field of name
+Similar to `SignInSchema`, with just another added field of username
 
 feat: Define sign-up schema using zod
 
@@ -2548,4 +2548,121 @@ export default function SignUpPage() {
 }
 ```
 
+### Build the sign-up form
 
+3. **Build the Form**
+   - Use the `<Form>` components (provided by your UI library) to build your form.
+   - Include form fields, labels, error messages, and any other necessary components.
+
+Similar to the sign-in form but with a few changes:
+ - `CardWrapper` props changed to reflect the sign-up page
+ - `FormField` for the `username`
+
+feat: Implement the sign-up form
+
+- Import necessary form and UI components
+- Add form fields, labels, and error messages
+- Include a submit button
+
+```tsx
+import CardWrapper from '@/components/auth/CardWrapper';
+import FormError from '@/components/form/FormError';
+import FormSuccess from '@/components/form/FormSuccess';
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+export default function SignUpPage() {
+  // 1. Define the sign-up form...
+  // 2. Define a submit handler...
+
+  // 3. Build the form
+  return (
+    <CardWrapper
+      backButtonHref="/auth/signin"
+      backButtonLabel="Already have an account?"
+      headerLabel="Create an account"
+      showSocialSignIn={true}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className='space-y-4'>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='email'
+                      placeholder="Enter your email address"
+                      aria-label="Email address"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type='password'
+                      placeholder="**************"
+                      aria-label="Password"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your username"
+                      aria-label="username"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormError message={errorMessage} />
+          <FormSuccess message={successMessage} />
+          <Button
+            type="submit"
+            disabled={isPending}
+            className='w-full bg-sky-500'
+          >
+            Sign Up
+          </Button>
+        </form>
+      </Form>
+    </CardWrapper>
+  );
+}
+```
