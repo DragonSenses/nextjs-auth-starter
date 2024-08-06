@@ -2459,3 +2459,56 @@ export default function SignUpPage() {
   )
 }
 ```
+
+### 2.5 Define a submit handler for sign-up page
+
+While here we can also define the submit handler, which has the same logic as the `SignInPage`. But with a different server action: `signUp`.
+
+feat: Create signUp server action to validate data
+
+`actions\signUp.ts`
+```ts
+"use server";
+
+import { z } from "zod";
+import { SignUpSchema } from "@/schemas";
+
+/**
+ * Validates user sign-up data using the provided schema.
+ *
+ * @param values - User input data to validate.
+ * @returns An object with either a success message or an error message.
+ */
+export default async function signUp(values: z.infer<typeof SignUpSchema>) {
+  console.log(values);
+
+  const parsedValues = SignUpSchema.safeParse(values);
+
+  if (!parsedValues.success) {
+    return {
+      error: "Invalid fields!",
+    };
+  }
+
+  return {
+    success: "Sign up successful!",
+  };
+}
+```
+
+feat: Implement sign-up form submission handler
+
+```tsx
+  function onSubmit(values: z.infer<typeof SignUpSchema>) {
+    console.log(values);
+    setSuccessMessage("");
+    setErrorMessage("");
+    startTransition(() => {
+      signUp(values)
+        .then((data) => {
+          setSuccessMessage(data.success);
+          setErrorMessage(data.error);
+        });
+    });
+  }
+```
