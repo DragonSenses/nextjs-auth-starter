@@ -2548,7 +2548,7 @@ export default function SignUpForm() {
 }
 ```
 
-### Build the sign-up form
+### 3. Build the sign-up form
 
 3. **Build the Form**
    - Use the `<Form>` components (provided by your UI library) to build your form.
@@ -2596,6 +2596,24 @@ export default function SignUpForm() {
           <div className='space-y-4'>
             <FormField
               control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your username"
+                      aria-label="username"
+                      disabled={isPending}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -2624,24 +2642,6 @@ export default function SignUpForm() {
                       type='password'
                       placeholder="**************"
                       aria-label="Password"
-                      disabled={isPending}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter your username"
-                      aria-label="username"
                       disabled={isPending}
                       {...field}
                     />
