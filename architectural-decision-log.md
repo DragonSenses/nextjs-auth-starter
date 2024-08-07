@@ -3067,3 +3067,36 @@ Here's how we map the fields:
 - `password`: A string field to store the user's password (you can choose the appropriate type for password storage, such as hashed).
 - `username`: An optional string field to store the user's chosen username.
 
+### Prisma Toolkit: Database Modeling and Workflow
+
+In the terminal we can run the command `npx prisma` to see the list of commands to query, migrate and model the database.
+
+```sh
+npx prisma
+```
+
+After defining a prisma model, run the following command to generate artifacts:
+
+```sh
+npx prisma generate
+```
+
+Now we can access the `User` model via the Prisma Client Singleton instance. Here is an example:
+
+```tsx
+import React from 'react';
+import prisma from '@/db/prismaSingleton';
+
+export default async function page() {
+  const users = await prisma.user.findMany();
+
+  return ( <div>page</div> );
+}
+```
+
+To push the Prisma schema state to the database:
+ 
+```sh
+npx prisma db push
+```
+
