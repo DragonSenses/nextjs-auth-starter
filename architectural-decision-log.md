@@ -2730,3 +2730,76 @@ This command does two things:
 npm install @prisma/client
 ```
 
+### 4. Instantiate a single instance of PrismaClient
+
+[Best practice for instantiating Prisma Client with Next.js](https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices)
+
+Summary:
+
+- During development, the `next dev` command clears Node.js cache on run.
+- This behavior initializes a new `PrismaClient` instance each time due to hot reloading, which creates a connection to the database.
+- However, this can quickly exhaust the database connections because each `PrismaClient` instance holds its own connection pool.
+
+**Solution:**
+To address this issue, follow these steps:
+1. Instantiate a single instance of `PrismaClient`.
+2. Save it on the `globalThis` object.
+3. Check if `PrismaClient` is already on the `globalThis` object before instantiating a new one. If it's present, reuse the existing instance to prevent unnecessary instantiation.
+
+This approach ensures efficient database connections and prevents excessive resource usage.
+
+`/db.ts`
+```ts
+import { PrismaClient } from '@prisma/client'
+
+const prismaClientSingleton = () => {
+  return new PrismaClient()
+}
+
+declare const globalThis: {
+  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+} & typeof global;
+
+const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+
+export default prisma
+
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
+```
+
+After creating this file, you can now import the extended PrismaClient instance anywhere in your Next.js project as follows:
+
+```tsx
+// e.g. in `app/page.tsx`
+import prisma from './db'
+
+export default function page() {
+  const posts = await prisma.post.findMany()
+
+  return (
+    <div>page</div>
+  )
+}
+
+```
+
+Note: You can extend Prisma Client using a Prisma Client extension by appending the `$extends` client method when instantiating Prisma Client as follows:
+
+```ts
+import { PrismaClient } from '@prisma/client'
+
+const prismaClientSingleton = () => {
+  return new PrismaClient().$extends({
+    result: {
+      user: {
+        fullName: {
+          needs: { firstName: true, lastName: true },
+          compute(user) {
+            return `${user.firstName} ${user.lastName}`
+          },
+        },
+      },
+    },
+  })
+}
+```
