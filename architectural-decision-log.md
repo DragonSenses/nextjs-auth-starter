@@ -2965,3 +2965,105 @@ The **Prisma schema** serves as the central configuration for your Prisma setup.
 3. **Generator Configuration**: You can define code generators in the Prisma schema. These generators create the necessary code for your application based on the data model. For example, Prisma generates TypeScript or JavaScript code for your database queries and mutations.
 
 In summary, the Prisma schema acts as the bridge between your application's data model and the underlying database, providing a clear and structured way to manage your data access layer. For more specific details or examples related to the Prisma schema, see the [official documentation](https://www.prisma.io/docs/orm/prisma-schema/overview).
+
+### Defining a model
+
+In a **Prisma schema**, you define your application models (also known as Prisma models) using a concise syntax.
+
+**Models**: These represent the entities in your application domain. They map to tables (in relational databases like PostgreSQL) or collections (in MongoDB). Models form the foundation for queries available in the generated Prisma Client API.
+
+#### Example schema
+
+1. **Example Schema**:
+    ```prisma
+    model User {
+      id       Int     @id @default(autoincrement())
+      email    String  @unique
+      name     String?
+      role     Role    @default(USER)
+      posts    Post[]
+      profile  Profile?
+    }
+
+    model Profile {
+      id      Int    @id @default(autoincrement())
+      bio     String
+      user    User   @relation(fields: [userId], references: [id])
+      userId  Int    @unique
+    }
+
+    model Post {
+      id          Int       @id @default(autoincrement())
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      title       String
+      published   Boolean   @default(false)
+      author      User      @relation(fields: [authorId], references: [id])
+      authorId    Int
+      categories  Category[]
+    }
+
+    model Category {
+      id     Int     @id @default(autoincrement())
+      name   String
+      posts  Post[]
+    }
+
+    enum Role {
+      USER
+      ADMIN
+    }
+    ```
+2. **Explanation**:
+    - The schema defines models like `User`, `Profile`, `Post`, and `Category`.
+    - Fields within models (e.g., `email`, `name`, etc.) correspond to columns in the database.
+    - Relationships (e.g., `@relation`, `@unique`) define how models relate to each other.
+    - Enums (like `Role`) allow you to define fixed sets of values.
+
+3. **Generated Prisma Client**:
+    - Prisma Client generates type-safe code for your models, making database access safe and efficient.
+    - You can create records, query data, and perform mutations using Prisma Client.
+
+Remember, your data model reflects your application's domain. Whether it's an ecommerce app (with models like `Customer`, `Order`, etc.) or a social media platform (with `User`, `Post`, etc.), the Prisma schema captures the essence of your data structure.
+
+#### Convert sign-up zod schema into prisma schema model
+
+Let's convert the Zod schema for sign-up into a Prisma schema model. Prisma models define the data structure for the database, and we'll map the relevant fields from the Zod schema to Prisma models.
+
+First, identify the relevant fields in `SignUpSchema` Zod schema:
+
+`schemas\index.ts`
+```ts
+export const SignUpSchema = z.object({
+  email: z.string().email({
+    message: 'Please enter a valid email address.',
+  }),
+  password: PasswordSchema,
+  username: z.string().min(1, {
+    message: 'Please enter a valid username',
+  }),
+});
+```
+
+1. `email`: Represents the user's email address.
+2. `password`: Represents the user's password.
+3. `username`: Represents the user's chosen username.
+
+Now, let's create a Prisma model named `User` that corresponds to these fields:
+
+`prisma\schema.prisma`
+```prisma
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String // You can choose the appropriate type for password storage (e.g., hashed)
+  username String? // Optional username
+}
+```
+
+Here's how we map the fields:
+
+- `email`: A unique string field (`@unique`) to store the user's email.
+- `password`: A string field to store the user's password (you can choose the appropriate type for password storage, such as hashed).
+- `username`: An optional string field to store the user's chosen username.
+
