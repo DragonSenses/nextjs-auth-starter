@@ -2724,6 +2724,22 @@ This command does two things:
      
    - creates the [`.env` file](https://www.prisma.io/docs/orm/more/development-environment/environment-variables/env-files) in the root directory of the project, which is used for defining environment variables (such as your database connection)
 
+### 2.5 (Important) Add .env file to .gitignore
+
+Don't forget to add `.env` in the `gitignore` file to not commit any private information.
+
+The boilerplate `.env` file will contain some comments and a variable `DATABASE_URL`. The URL is
+
+```sh
+# Environment variables declared in this file are automatically made available to Prisma.
+# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+```
+
 ### 3. Install Prisma Client
 
 ```sh
@@ -2767,11 +2783,13 @@ export default prisma
 if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
 ```
 
+Let's rename the file `prismaSingleton.ts` and put it in a folder `/db` at the root of the project.
+
 After creating this file, you can now import the extended PrismaClient instance anywhere in your Next.js project as follows:
 
 ```tsx
 // e.g. in `app/page.tsx`
-import prisma from './db'
+import prisma from '@/db/prismaSingleton';
 
 export default function page() {
   const posts = await prisma.post.findMany()
@@ -2803,3 +2821,15 @@ const prismaClientSingleton = () => {
   })
 }
 ```
+
+## Database
+
+### Acquire a `DATABASE_URL`
+
+When working with a PostgreSQL database, the `DATABASE_URL` you receive depends on whether you have a local database on your machine or an online one. 
+
+#### Online PostgreSQL database
+
+If you're using an online database, consider using a provider like [Neon](https://neon.tech). Their platform offers serverless Postgres, allowing you to build reliable and scalable applications faster. To get started, sign up for Neon, explore database branching, and connect it to your tech stack. You'll find detailed instructions in the [Neon documentation](https://neon.tech/docs/introduction). 
+
+#### Local PostgreSQL database
