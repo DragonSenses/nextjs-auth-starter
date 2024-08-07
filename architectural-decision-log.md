@@ -2833,3 +2833,38 @@ When working with a PostgreSQL database, the `DATABASE_URL` you receive depends 
 If you're using an online database, consider using a provider like [Neon](https://neon.tech). Their platform offers serverless Postgres, allowing you to build reliable and scalable applications faster. To get started, sign up for Neon, explore database branching, and connect it to your tech stack. You'll find detailed instructions in the [Neon documentation](https://neon.tech/docs/introduction). 
 
 #### Local PostgreSQL database
+
+This project will use a local PostgreSQL database.
+
+##### Install local PostgreSQL database
+
+- [Set up a local postgresql database | Prisma](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database)
+
+To install on Windows
+
+1. Get [Windows postgresql installer](https://www.postgresql.org/download/windows/), get the Windows x86-64
+2. Go through the installer steps
+3. Confirm a password for the PostgreSQL superuser called `postgres`
+   - Write this password down physically somewhere to be used later
+4. Setup port (default at 5432)
+5. Default locale
+6. Review the pre installation summary log (can be found in the directory "C:\Program Files\PostgreSQL\16\installation_summary.log" )
+7. Finish installation
+8. Skip or cancel Stack Builder
+
+### Set up prisma schema with local database
+
+- [Connection Urls | Prisma docs](https://pris.ly/d/connection-strings)
+- [PostgreSQL in prisma connection string](https://www.prisma.io/docs/orm/overview/databases/postgresql)
+
+Create an `.env` file. Add an environment variable for the postgresql connection URI.
+
+Inside the `.env` file create a `DATABASE_URL` variable. This will store the connection URI string to our local database. 
+
+An example connection URI string should be something like this: 
+
+`.env`
+```shell
+DATABASE_URL="postgresql://myname:mypassword@localhost:5432/mydb?schema=public"
+```
+
