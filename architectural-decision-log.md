@@ -2824,6 +2824,8 @@ const prismaClientSingleton = () => {
 
 ## Database
 
+This project uses [PostgreSQL](https://www.postgresql.org/), here are the setup instructions.
+
 ### Acquire a `DATABASE_URL`
 
 When working with a PostgreSQL database, the `DATABASE_URL` you receive depends on whether you have a local database on your machine or an online one. 
@@ -2935,3 +2937,31 @@ pg_isready -d DATABASE_NAME -h HOST_NAME -p PORT_NUMBER -U DATABASE_USER
 For MySQL, PostgreSQL and CockroachDB you must [percentage-encode special characters](https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding) in any part of your connection URL - including passwords. For example, `p@$$w0rd` becomes `p%40%24%24w0rd`.
 
 For Microsoft SQL Server, you must escape special characters in any part of your connection string.
+
+## Prisma Schema
+
+Ensure that the `DATABASE_URL` is properly configured in your `.env` file. With the database setup complete we can build our data models within the `schema.prisma`. 
+
+`prisma\schema.prisma`
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+### What is Prisma schema?
+
+The **Prisma schema** serves as the central configuration for your Prisma setup. Typically named `schema.prisma`, it fulfills several crucial roles:
+
+1. **Data Model Definition**: In an intuitive data modeling language, developers define their application models within the Prisma schema. This includes specifying entities, relationships, and fields.
+
+2. **Database Connection**: The Prisma schema establishes the connection to your database. It contains information about the database provider, connection URL, and other relevant settings.
+
+3. **Generator Configuration**: You can define code generators in the Prisma schema. These generators create the necessary code for your application based on the data model. For example, Prisma generates TypeScript or JavaScript code for your database queries and mutations.
+
+In summary, the Prisma schema acts as the bridge between your application's data model and the underlying database, providing a clear and structured way to manage your data access layer. For more specific details or examples related to the Prisma schema, see the [official documentation](https://www.prisma.io/docs/orm/prisma-schema/overview).
