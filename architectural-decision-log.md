@@ -2868,3 +2868,70 @@ An example connection URI string should be something like this:
 DATABASE_URL="postgresql://myname:mypassword@localhost:5432/mydb?schema=public"
 ```
 
+1. **Provider**: The `provider` specifies the type of database you're connecting to. In this case, it's PostgreSQL.
+
+2. **URL Components**:
+   - **User**: `"myname"` is the username for the database.
+   - **Password**: `"mypassword"` is the password for the user.
+   - **Host**: `"localhost"` refers to the machine where the PostgreSQL server is running.
+   - **Port**: `5432` is the default port for PostgreSQL.
+   - **Database Name**: `"mydb"` is the name of the database.
+   - **Schema**: `"public"` specifies the schema within the database.
+     - If you omit the schema, Prisma will use the `"public"` schema by default
+
+So, the complete URL connects to a PostgreSQL database with the given credentials and schema. If you're using Prisma, this URL allows Prisma ORM to connect to your database when executing queries with Prisma Client or making schema changes with Prisma Migrate. If you need to make the URL dynamic, you can pass it programmatically when creating the Prisma Client. 
+
+To connect to a PostgreSQL database server, you need to configure a [datasource](https://www.prisma.io/docs/orm/prisma-schema/overview/data-sources) block in your [Prisma schema file](https://www.prisma.io/docs/orm/prisma-schema):
+
+`schema.prisma`
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+The fields passed to the datasource block are:
+
+- `provider`: Specifies the `postgresql` data source connector.
+- `url`: Specifies the [connection URL](https://www.prisma.io/docs/orm/overview/databases/postgresql#connection-url) for the PostgreSQL database server. In this case, an [environment variable is used](https://www.prisma.io/docs/orm/prisma-schema/overview#accessing-environment-variables-from-the-schema) to provide the connection URL.
+
+Or without environment variables (not recommended):
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://myname:mypassword@localhost:5432/mydb?schema=public"
+}
+```
+
+#### Connection URI strings
+
+- [Connection Urls | Prisma docs](https://pris.ly/d/connection-strings)
+
+- [Intro to PostgreSQL connection URIs](https://www.prisma.io/dataguide/postgresql/short-guides/connection-uris)
+
+Let's look at the spec for a PostgreSQL connection URI:
+```sh
+postgres[ql]://[username[:password]@][host[:port],]/database[?parameter_list]
+
+\_____________/\____________________/\____________/\_______/\_______________/
+     |                   |                  |          |            |
+     |- schema           |- userspec        |          |            |- parameter list
+                                            |          |
+                                            |          |- database name
+                                            |
+                                            |- hostspec
+```
+
+We can test a PostgreSQL connection string in the terminal by running the command `pg_isready`
+
+```sh
+pg_isready -d DATABASE_NAME -h HOST_NAME -p PORT_NUMBER -U DATABASE_USER
+```
+
+##### **Important** Connection URL for PostgreSQL must percentage-encode special characters!
+
+For MySQL, PostgreSQL and CockroachDB you must [percentage-encode special characters](https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding) in any part of your connection URL - including passwords. For example, `p@$$w0rd` becomes `p%40%24%24w0rd`.
+
+For Microsoft SQL Server, you must escape special characters in any part of your connection string.
