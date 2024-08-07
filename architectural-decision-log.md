@@ -2684,3 +2684,49 @@ export default function SignUpPage() {
   )
 }
 ```
+
+## Prisma ORM
+
+Let's install [prisma](https://www.prisma.io/docs) and [prisma/client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration) to run with our Next.js project.
+
+- [Set up Prisma ORM wih Relation Database](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases-typescript-postgresql)
+
+Steps: 
+
+1. Install the Prisma CLI
+2. Create a Prisma Schema file
+3. Install Prisma Client
+4. Instantiate a single instance of PrismaClient
+
+### 1. Install the Prisma CLI
+
+```sh
+npm install prisma --save-dev
+```
+
+You can now invoke the Prisma CLI by prefixing it with `npx`:
+
+```sh
+npx prisma
+```
+
+### 2. Create a Prisma Schema file
+
+Set up your Prisma ORM project by creating your Prisma Schema file with the following command:
+
+```sh
+npx prisma init
+```
+
+This command does two things:
+
+   - creates a new directory called `prisma` that contains a file called `schema.prisma`, which contains the Prisma schema with your database connection variable and schema models
+     
+   - creates the [`.env` file](https://www.prisma.io/docs/orm/more/development-environment/environment-variables/env-files) in the root directory of the project, which is used for defining environment variables (such as your database connection)
+
+### 3. Install Prisma Client
+
+```sh
+npm install @prisma/client
+```
+
