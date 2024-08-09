@@ -3100,3 +3100,63 @@ To push the Prisma schema state to the database:
 npx prisma db push
 ```
 
+# Auth.js
+
+- [Auth.js](https://authjs.dev/)
+- [Prisma Adapter | Auth.js](https://authjs.dev/getting-started/adapters/prisma)
+
+Let's follow the steps in the authjs prisma adapter docs.
+
+
+We can find a specific [schema thats required by Auth.js](https://authjs.dev/getting-started/adapters/prisma#schema).
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+ 
+generator client {
+  provider = "prisma-client-js"
+}
+ 
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+
+```
+
+
+### Installation
+
+```sh
+npm install @prisma/client @auth/prisma-adapter
+npm install prisma --save-dev
+```
+
+Or just install `@auth/prisma-adapter`:
+
+```sh
+npm install @auth/prisma-adapter
+```
+
+### Environment Variables
+
+```sh
+DATABASE_URL=postgres://postgres:adminadmin@0.0.0.0:5432/db
+```
+
+### Configuration
+
