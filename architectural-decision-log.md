@@ -3432,6 +3432,8 @@ const myPlaintextPassword = 's0/\/\P4$$w0rD';
 })();
 ```
 
+#### Create User in signUp action
+
 Now go to the `signUp` action and import `bcrypt` to generate the hash from the password.
 
 feat(auth): Add password hashing using bcrypt
@@ -3471,3 +3473,54 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
   };
 }
 ```
+
+Next find if we already have an existing user.
+
+feat(auth): Verify unique email before signUp
+
+When a user signs up, verify that the email address is unique and does not already exist in the database before allowing registration or updating the email.
+
+feat: Check for existing user in signUp action
+
+```ts
+import bcrypt from "bcrypt";
+import { z } from "zod";
+
+import prisma from "@/db/prismaSingleton";
+import { SignUpSchema } from "@/schemas";
+
+
+export default async function signUp(values: z.infer<typeof SignUpSchema>) {
+  console.log(values);
+
+  const parsedValues = SignUpSchema.safeParse(values);
+
+  if (!parsedValues.success) {
+    return {
+      error: "Invalid fields!",
+    };
+  }
+
+  const { email, password, username } = parsedValues.data;
+
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+
+  // Check if an existing user with the given email exists
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (existingUser) {
+    return { error: "Email address is already in use." };
+  }
+
+  return {
+    success: "Sign up successful!",
+  };
+}
+```
+
