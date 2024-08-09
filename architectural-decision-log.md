@@ -3524,6 +3524,120 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
 }
 ```
 
+Let's refactor out the existing user logic into separate utility function.
+
+feat: Create user record retrieval utilities
+
+refactor: Extract existing user logic into utility
+
+`utils\getUserByEmail.ts`
+```ts
+import prisma from "@/db/prismaSingleton";
+
+export default async function getUserByEmail(email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    return user;
+  } catch {
+    return null;
+  }
+}
+```
+
+Now use the function `getUserByEmail` inside the signUp action:
+
+```ts
+import getUserByEmail from "@/utils/getUserByEmail";
+
+export default async function signUp(values: z.infer<typeof SignUpSchema>) {
+  // ...
+
+  // Check if an existing user with the given email exists
+  const existingUser = await getUserByEmail(email);
+```
+
+Let's improve the error handling for the `getUserByEmail` function. We know that we can expect various errors from Prisma Client by checking the [prisma client error reference](https://www.prisma.io/docs/orm/reference/error-reference).
+
+feat: Improve error handling in getUserByEmail
+
+```ts
+import { Prisma } from "@prisma/client";
+import prisma from "@/db/prismaSingleton";
+
+/**
+ * Retrieves a user by their email address.
+ *
+ * @param email - The email address to search for.
+ * @returns The user object if found, or null if not found or an error occurs
+ * @see {@link https://www.prisma.io/docs/orm/reference/error-reference} Prisma error reference
+ */
+export default async function getUserByEmail(email: string) {
+  try {
+    // Check if an existing user with the given email exists
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Handle specific Prisma errors (e.g., database connection issue)
+      console.error("Prisma error:", error.message);
+    } else {
+      // Handle other unexpected errors
+      console.error("Unexpected error:", error);
+    }
+    return null;
+  }
+}
+```
+
+While here let's also create a similar utility function `getUserById`, that retrieves a `User` record by their ID. We will use these utility functions in our authentication callbacks later when we need more information from the database.
+
+feat: Create getUserById utility function
+
+`utils\getUserById.ts`
+```ts
+import { Prisma } from "@prisma/client";
+import prisma from "@/db/prismaSingleton";
+
+/**
+ * Retrieves a user by their ID.
+ *
+ * @param id - The user ID to search for.
+ * @returns The user object if found, or null if not found or an error occurs
+ * @see {@link https://www.prisma.io/docs/orm/reference/error-reference} Prisma error reference
+ */
+export default async function getUserById(id: string) {
+  try {
+    // Check if an existing user with the given ID exists
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Handle specific Prisma errors (e.g., database connection issue)
+      console.error("Prisma error:", error.message);
+    } else {
+      // Handle other unexpected errors
+      console.error("Unexpected error:", error);
+    }
+    return null;
+  }
+}
+```
+
 feat(auth): Create user during signUp
 
 feat: Create user record in signUp server action
