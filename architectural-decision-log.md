@@ -3107,6 +3107,7 @@ npx prisma db push
 
 Let's follow the steps in the authjs prisma adapter docs.
 
+### Prisma Adapter Configuration
 
 We can find a specific [schema thats required by Auth.js](https://authjs.dev/getting-started/adapters/prisma#schema).
 
@@ -3135,9 +3136,93 @@ model User {
   updatedAt DateTime @updatedAt
 }
  
-
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+ 
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, credentialID])
+}
 ```
 
+Let's break down the schema:
+
+1. **Database Connection**: The schema defines the database connection. You specify the data source (e.g., PostgreSQL, MySQL) and any relevant connection details.
+
+2. **Generator**: The schema specifies the code generator that Prisma should use to generate the Prisma Client.
+   
+  - The `generator` block in the Prisma schema specifies the code generator that Prisma should use to generate the Prisma Client. Let's break it down:
+  
+  - **Provider**: The `provider` field specifies the language or platform for which you want to generate the Prisma Client. The `"prisma-client-js"` generates a JavaScript client for the Prisma schema.
+   - Prisma supports other providers as well. For example:
+     - `"prisma-client-java"` generates a Java client.
+
+  - When you run `prisma generate`, Prisma uses this information to create a client library that allows you to interact with your database using JavaScript.
+
+3. **Data Model**: The schema also contains the data model. It defines the structure of the database tables, including their fields, relationships, and constraints.
+
+    - `Account`: Represents user accounts with fields like `id`, `userId`, `type`, and `provider`.
+    - `Session`: Represents user sessions with fields like `id`, `sessionToken`, and `expires`.
+    - `User`: Represents users with fields like `id`, `name`, `email`, and relationships to `Account` and `Session`.
+    - `VerificationToken`: Represents verification tokens with fields like `identifier`, `token`, and `expires`.
+
+4. **Directives**:
+   - `@id`: Indicates the primary key field.
+   - `@default(cuid())`: Specifies a default value (e.g., a unique identifier).
+   - `@map("...")`: Maps the field name to a specific column name in the database.
+   - `@unique`: Ensures uniqueness for the specified fields.
+   - `@db.Text`: Specifies that the field should be stored as text in the database.
+   - `@relation`: Defines relationships between models (e.g., `user User @relation(fields: [userId], references: [id], onDelete: Cascade)`).
+
+5. **Table Names**:
+   - Use `@@map("...")` to customize the table names in the database (e.g., `"accounts"` for the `Account` model).
 
 ### Installation
 
