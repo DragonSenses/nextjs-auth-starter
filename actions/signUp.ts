@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import prisma from "@/db/prismaSingleton";
 import { SignUpSchema } from "@/schemas";
+import getUserByEmail from "@/utils/getUserByEmail";
 
 /**
  * Validates user sign-up data using the provided schema.
@@ -32,11 +33,7 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
   const hash = await bcrypt.hash(password, salt);
 
   // Check if an existing user with the given email exists
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
+  const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
     return { error: "Email address is already in use." };
