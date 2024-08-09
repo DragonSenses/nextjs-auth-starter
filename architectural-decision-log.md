@@ -2942,8 +2942,15 @@ For Microsoft SQL Server, you must escape special characters in any part of your
 
 Ensure that the `DATABASE_URL` is properly configured in your `.env` file. With the database setup complete we can build our data models within the `schema.prisma`. 
 
+Here is the boilerplate `schema.prisma` file provided by the `npx prisma init` command:
+
 `prisma\schema.prisma`
 ```prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client-js"
 }
@@ -3297,6 +3304,20 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([provider, providerAccountId])
+}
+```
+
+feat: Add Session model in prisma schema
+
+```prisma
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 ```
 
