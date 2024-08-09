@@ -3252,18 +3252,24 @@ Remember that while lowercase names have these advantages, the most important fa
 
 Let's build the schema step-by-step.
 
-feat: Update User model fields
+##### User model
+
+Changes from the `User` model from the docs:
+- Changed `name` field to `username`
+- Removed `Authenticator` for WebAuthn support
+
+feat: Update User model fields in schema
 
 ```prisma
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String          @unique
+  id            String    @id @default(cuid())
+  username      String?
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
