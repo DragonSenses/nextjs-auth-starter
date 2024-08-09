@@ -3111,8 +3111,50 @@ npx prisma db push
 
 - [Auth.js](https://authjs.dev/)
 - [Prisma Adapter | Auth.js](https://authjs.dev/getting-started/adapters/prisma)
+- [Credentials | Auth.js](https://authjs.dev/getting-started/authentication/credentials)
 
 Let's follow the steps in the authjs prisma adapter docs.
+
+- [Getting started Auth.js](https://authjs.dev/getting-started/installation?framework=next.js)
+
+## Auth.js Prisma Adapter
+
+### Installation
+
+```sh
+npm install @prisma/client @auth/prisma-adapter
+npm install prisma --save-dev
+```
+
+Or just install `@auth/prisma-adapter`:
+
+```sh
+npm install @auth/prisma-adapter
+```
+
+### Environment Variables
+
+```sh
+DATABASE_URL=postgres://postgres:adminadmin@0.0.0.0:5432/db
+```
+
+### Configuration
+
+Create the Auth.js config file and object. This is where you can control the behaviour of the library and specify custom authentication logic, adapters, etc. In this file we'll pass in all the options to the framework specific initalization function and then export the route handler(s), signin and signout methods, and more.
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaClient } from "@prisma/client"
+ 
+const prisma = new PrismaClient()
+ 
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  providers: [],
+})
+```
 
 ### Prisma Adapter Configuration
 
@@ -3282,6 +3324,32 @@ model User {
 }
 ```
 
+###### password in User model
+
+Notice that the provided `User` model does not have the `password` field. That's because Auth.js does not use credentials by default but does have support for [Credentials Provider | Authjs](https://authjs.dev/getting-started/providers/credentials#configuration).
+
+Add an optional password field in the User model. This option is necessary because OAuth providers such as Google or GitHub should be able to create a User model without requiring a password.
+
+feat: Add password field to User model
+
+```prisma
+model User {
+  id            String    @id @default(cuid())
+  username      String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  accounts      Account[]
+  sessions      Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+##### Account model
+
 feat: Add Account model in prisma schema
 
 ```prisma
@@ -3307,6 +3375,8 @@ model Account {
 }
 ```
 
+##### Session model
+
 feat: Add Session model in prisma schema
 
 ```prisma
@@ -3320,25 +3390,4 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 ```
-
-### Installation
-
-```sh
-npm install @prisma/client @auth/prisma-adapter
-npm install prisma --save-dev
-```
-
-Or just install `@auth/prisma-adapter`:
-
-```sh
-npm install @auth/prisma-adapter
-```
-
-### Environment Variables
-
-```sh
-DATABASE_URL=postgres://postgres:adminadmin@0.0.0.0:5432/db
-```
-
-### Configuration
 
