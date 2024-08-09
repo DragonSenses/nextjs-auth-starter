@@ -3111,6 +3111,7 @@ Let's follow the steps in the authjs prisma adapter docs.
 
 We can find a specific [schema thats required by Auth.js](https://authjs.dev/getting-started/adapters/prisma#schema).
 
+`prisma/schema-postgres.prisma`
 ```prisma
 datasource db {
   provider = "postgresql"
@@ -3223,6 +3224,50 @@ Let's break down the schema:
 
 5. **Table Names**:
    - Use `@@map("...")` to customize the table names in the database (e.g., `"accounts"` for the `Account` model).
+
+##### Lowercase table names and Prisma's @map feature
+
+Note: Prisma's [`@map()` feature](https://www.prisma.io/docs/concepts/components/prisma-schema/names-in-underlying-database) allows you to change the field names and customize the column names to whichever naming convention you prefer.
+
+Using lowercase table names like "users" or "accounts" has some advantages:
+
+1. **Consistency and Convention**:
+   - Lowercase table names follow common naming conventions in databases.
+   - Consistency across your schema makes it easier for developers (including yourself) to understand and maintain the codebase.
+
+2. **Compatibility with Database Systems**:
+   - Some database systems (e.g., PostgreSQL) treat table names as case-insensitive by default.
+   - Using lowercase ensures compatibility across different databases.
+
+3. **Readability and Clarity**:
+   - Lowercase names are more readable and concise.
+   - They avoid confusion with other identifiers (e.g., column names, function names).
+
+4. **URLs and Routes**:
+   - If you use table names in URLs or routes (e.g., for REST APIs), lowercase names are cleaner and more SEO-friendly.
+
+Remember that while lowercase names have these advantages, the most important factor is consistency within your project. Choose a naming convention that aligns with your team's preferences and project requirements. 
+
+#### `schema.prisma` config
+
+Let's build the schema step-by-step.
+
+feat: Update User model fields
+
+```prisma
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
 
 ### Installation
 
