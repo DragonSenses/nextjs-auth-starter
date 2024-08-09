@@ -3391,3 +3391,83 @@ model Session {
 }
 ```
 
+### Create user record on signUp action
+
+We want to save the `values` from the user sign-up data after validation in the `signUp` server action.
+
+#### bcrypt
+
+We need to encrypt the password data in the user sign-up process to greatly improve the security of our users.
+
+For that we delegate the password hashing to a library named [bcrypt](https://www.npmjs.com/package/bcrypt). Additionally, we need to install bcrypt type definitions with [@types/bcrypt](https://www.npmjs.com/package/@types/bcrypt).
+
+Install bcrypt:
+
+```sh
+npm i bcrypt
+```
+
+Install @types/bcrypt as dev dependency
+
+```sh
+npm i -D @types/bcrypt
+```
+
+Here is an example of how to use `bcrypt`
+
+```ts
+import * as bcrypt from 'bcrypt';
+const saltRounds = 10;
+const myPlaintextPassword = 's0/\/\P4$$w0rD';
+
+(async () => {
+    // Technique 1 (generate a salt and hash on separate function calls):
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(myPlaintextPassword, salt);
+    // Store hash in your password DB.
+
+    // Technique 2 (auto-gen a salt and hash):
+    const hash2 = await bcrypt.hash(myPlaintextPassword, saltRounds);
+    // Store hash in your password DB.
+})();
+```
+
+Now go to the `signUp` action and import `bcrypt` to generate the hash from the password.
+
+feat(auth): Add password hashing using bcrypt
+
+feat: Implement password hashing in signUp action
+
+This commit introduces password hashing using bcrypt in the sign-up function. The user's password is securely hashed with a randomly generated salt, ensuring better security.
+
+```ts
+"use server";
+
+import bcrypt from 'bcrypt';
+import { z } from "zod";
+import { SignUpSchema } from "@/schemas";
+
+export default async function signUp(values: z.infer<typeof SignUpSchema>) {
+  console.log(values);
+
+  const parsedValues = SignUpSchema.safeParse(values);
+
+  if (!parsedValues.success) {
+    return {
+      error: "Invalid fields!",
+    };
+  }
+
+  // Extract the data from the parsed values
+  const { email, password, username } = parsedValues.data;
+
+  // Hash the password
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+
+  return {
+    success: "Sign up successful!",
+  };
+}
+```
