@@ -1,5 +1,6 @@
 "use server";
 
+import bcrypt from 'bcrypt';
 import { z } from "zod";
 import { SignUpSchema } from "@/schemas";
 
@@ -19,6 +20,14 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
       error: "Invalid fields!",
     };
   }
+
+  // Extract the data from the parsed values
+  const { email, password, username } = parsedValues.data;
+
+  // Hash the password
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
 
   return {
     success: "Sign up successful!",
