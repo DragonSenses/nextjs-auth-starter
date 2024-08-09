@@ -1,7 +1,9 @@
 "use server";
 
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import { z } from "zod";
+
+import prisma from "@/db/prismaSingleton";
 import { SignUpSchema } from "@/schemas";
 
 /**
@@ -28,6 +30,17 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
   const saltRounds = 10;
   const salt = await bcrypt.genSalt(saltRounds);
   const hash = await bcrypt.hash(password, salt);
+
+  // Check if an existing user with the given email exists
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (existingUser) {
+    return { error: "Email address is already in use." };
+  }
 
   return {
     success: "Sign up successful!",
