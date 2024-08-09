@@ -42,6 +42,16 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
     return { error: "Email address is already in use." };
   }
 
+  // Create a new user in the database with the provided sign-up data:
+  // username, email, and hashed password
+  await prisma.user.create({
+    data: {
+      username,
+      email,
+      password: hash,
+    }
+  });
+
   return {
     success: "Sign up successful!",
   };
