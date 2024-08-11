@@ -3702,3 +3702,61 @@ export default async function signUp(values: z.infer<typeof SignUpSchema>) {
   };
 }
 ```
+
+## Install Auth.js v5 or higher
+
+- [Upgrade Guide NextAuth.js v5](https://authjs.dev/getting-started/migrating-to-v5) do this only if you are upgrading from a previous version of `next-auth`
+- [Installation Guide Auth.js](https://authjs.dev/getting-started/installation) for a fresh install
+
+### 1. **Install Auth.js**
+
+```sh
+npm install next-auth@beta
+```
+
+### 2. **Setup Environment**
+
+The only environment variable that is mandatory is the `AUTH_SECRET`. 
+  - This is a random value used by the library to encrypt tokens and email verification hashes. 
+  - (See [Deployment](https://authjs.dev/getting-started/deployment) to learn more). You can generate one via the official [Auth.js CLI](https://cli.authjs.dev/) running:
+
+```sh
+npx auth secret
+```
+
+This will also add it to your `.env` file, respecting the framework conventions (eg.: Next.js' `.env.local`).
+
+### 3. **Configure**
+
+Next, create the Auth.js config file and object. This is where you can control the behaviour of the library and specify custom authentication logic, adapters, etc. We recommend all frameworks to create an `auth.ts` file in the project. In this file we'll pass in all the options to the framework specific initalization function and then export the route handler(s), signin and signout methods, and more.
+
+1. Start by creating a new `auth.ts` file at the root of your app with the following content.
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+ 
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [],
+})
+```
+
+2. Add a Route Handler under `/app/api/auth/[...nextauth]/route.ts`.
+
+`./app/api/auth/[...nextauth]/route.ts`
+```ts
+import { handlers } from "@/auth" // Referring to the auth.ts we just created
+export const { GET, POST } = handlers
+```
+
+3. Add optional Middleware to keep the session alive, this will update the session expiry every time its called.
+
+`./middleware.ts`
+```ts
+export { auth as middleware } from "@/auth"
+```
+
+### 4. **Setup Authentication Methods**
+
+With that, the basic setup is complete! Next we’ll setup the first authentication methods and fill out that `providers` array. See [Authentication Auth.js Reference](https://authjs.dev/getting-started/authentication).
+
