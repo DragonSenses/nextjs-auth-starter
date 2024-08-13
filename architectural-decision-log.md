@@ -3809,6 +3809,16 @@ export const runtime = "edge" // optional
 
 Since this is a [catch-all dynamic route](https://nextjs.org/docs/pages/building-your-application/routing/dynamic-routes#catch-all-segments), it will respond to all the relevant Auth.js API routes so that your application can interact with the chosen OAuth provider using the [OAuth 2](https://oauth.net/2) protocol.
 
+refactor: Remove edge runtime compatibility
+
+`./app/api/auth/[...nextauth]/route.ts`
+```ts
+import { handlers } from "@/auth"
+export const { GET, POST } = handlers
+```
+
+Note: Since we are using prisma we can omit the `runtime = edge` as prisma adapter may not be fully edge compatible. See [Auth.js Edge Compatibility](https://authjs.dev/guides/edge-compatibility).
+
 ##### Adding environment variables
 
 If you haven’t, create an `.env.local` file as explained in the [installation](https://authjs.dev/getting-started/installation) section and add the following two GitHub variables:
