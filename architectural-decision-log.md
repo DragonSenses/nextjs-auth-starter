@@ -3823,3 +3823,70 @@ AUTH_GITHUB_SECRET=
 
 We will be filling `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` with proper values from the GitHub Developer Portal once we have registered our application in GitHub.
 
+##### Registering your App (GitHub)
+
+**Creating an OAuth App in GitHub**
+
+To get the required credentials from GitHub, we need to create an application in their developer settings.
+
+1. Go to the [GitHub developer settings](https://github.com/settings/developers), also found under **Settings → Developers → OAuth Apps**, and click “New OAuth App”:
+2. Next, you’ll be presented with a screen to register your application. Fill in all the required fields.
+3. The default callback URL should generally take the form of `[origin]/api/auth/callback/[provider]`, however, the default is slightly different depending on which framework you’re using.
+
+`Next.js`
+```sh
+// Local
+http://localhost:3000/api/auth/callback/github
+ 
+// Prod
+https://app.company.com/api/auth/callback/github
+```
+
+4. Once you’ve entered all the required fields, press “Register application”.
+
+**Secrets**
+
+- After successfully registering your application, GitHub will present us with the required details.
+- We need 2 things from this screen, the **Client ID** and **Client Secret**.
+
+- The **Client ID** is always visible, it is a public identifier of your OAuth application within GitHub.
+
+- To get a **Client Secret**, you have to click on **“Generate a new client secret**”, which will create your first client secret. You can easily create a new client secret here in case your first one gets leaked, lost, etc.
+- **Important**: Keep your Client Secret secure and never expose it to the public or share it with people outside your organization.
+
+##### Wiring all together (GitHub and Auth.js)
+
+Now that we have the required **Client ID** and **Client Secret**, paste them into your `.env.local` file we created earlier.
+
+`.env.local`
+```sh
+AUTH_SECRET="changeMe"
+ 
+AUTH_GITHUB_ID={clientId}
+AUTH_GITHUB_SECRET={clientSecret}
+```
+
+With all the pieces in place, you can now start your local dev server and test the login process.
+
+```sh
+npm run dev
+```
+
+Navigate to `http://localhost:3000`. You should see the following page:
+
+Click on “**Sign in**”, you should be redirected to the default Auth.js signin page. You can [customize this page](https://authjs.dev/guides/pages/signin) to fit your needs. Next, click on “**Sign in with GitHub**”. Auth.js will redirect you to GitHub, where GitHub will recognize your application and ask the user to confirm they want to authenticate to your new application by entering their credentials.
+
+Once authenticated, GitHub will redirect the user back to your app and Auth.js will take care of the rest:
+
+If you’ve landed back here that means everything worked! We have completed the whole OAuth authentication flow so that users can log in to your application via GitHub!
+
+Note: As you can see, most of the time required setting up OAuth in your application is spent registering your application in the OAuth provider’s dashboard (some are easier to navigate, some are harder). Once registered, the setup via Auth.js should be straight forward.
+
+###### **Deployment**
+
+Before you can release your app to production, you’ll need to change a few things.
+
+Unfortunately, GitHub is among the providers which do not let you register multiple callback URLs for one application. Therefore, you’ll need to register a separate application in GitHub’s dashboard [as we did previously](https://authjs.dev/guides/configuring-github#registering-our-app) but set the callback URL to your application’s production domain (.i.e `https://example.com/api/auth/callback/github`). You’ll then also have a new **Client ID** and **Client Secret** that you need to add to your production environment via your hosting provider’s dashboard (Vercel, Netlify, Cloudflare, etc.) or however you manage environment variables in production.
+
+Refer to the [Deployment page](https://authjs.dev/getting-started/deployment) for more information.
+
