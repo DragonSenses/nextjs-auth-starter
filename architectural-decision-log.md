@@ -3760,6 +3760,81 @@ feat: Configure NextAuth with empty providers
 feat: Initialize NextAuth route handlers
 feat: Extend session expiration on middleware call
 
+#### 3.5 Middleware
+
+feat: Configure selective middleware paths
+
+For advanced use cases, you can use `auth` as a wrapper for your Middleware:
+
+`middleware.ts`
+```ts
+import { auth } from "@/auth"
+ 
+export default auth((req) => {
+  // req.auth
+})
+ 
+// Optionally, don't invoke Middleware on some paths
+export const config = {
+  /*
+   * Match all request paths except for the ones starting with:
+   * - api (API routes)
+   * - _next/static (static files)
+   * - _next/image (image optimization files)
+   * - favicon.ico (favicon file)
+   */
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
+
+```
+
+- Check out additional [Middleware docs](https://authjs.dev/getting-started/session-management/protecting#nextjs-middleware) for more details.
+
+- Also see [Middleware | Nextjs App Router](https://nextjs.org/docs/app/building-your-application/routing/middleware)
+
+- [Matching Paths](https://nextjs.org/docs/app/building-your-application/routing/middleware#matching-paths)
+
+Middleware will be invoked for **every route in your project**. Given this, it's crucial to use matchers to precisely target or exclude specific routes. 
+
+The following is the execution order:
+
+1. `headers` from `next.config.js`
+2. `redirects` from `next.config.js`
+3. Middleware (`rewrites`, `redirects`, etc.)
+4. `beforeFiles` (`rewrites`) from `next.config.js`
+5. Filesystem routes (`public/`, `_next/static/`, `pages/`, `app/`, etc.)
+6. `afterFiles` (`rewrites`) from `next.config.js`
+7. Dynamic Routes (`/blog/[slug]`)
+8. `fallback` (`rewrites`) from `next.config.js`
+
+There are two ways to define which paths Middleware will run on:
+
+1. [Custom matcher config](https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher)
+2. [Conditional statements](https://nextjs.org/docs/app/building-your-application/routing/middleware#conditional-statements)
+
+Middleware example:
+
+Suppose you want middleware to apply only to paths starting with `/auth/signin`, here is how you would configure it:
+
+```ts
+import { auth } from "@/auth"
+ 
+export default auth((req) => {
+  // req.auth
+  console.log("ROUTE: ", req.nextUrl.pathname);
+})
+
+export const config = {
+  matcher: ["/auth/signin"],
+}
+```
+
+Now if you navigate to `localhost:3000/auth/signin` we can see in the terminal the route is logged so the middleware was invoked. On the other hand, if you navigate to the `/auth/signup` path the middleware is not invoked.
+
+The `config` is simply and object with a `matcher` to be able to invoke the middleware (i.e., `auth` function).
+
+
+
 ### 4. **Setup Authentication Methods**
 
 With that, the basic setup is complete! Next we'll setup the first authentication methods and fill out that `providers` array. See [Authentication Auth.js Reference](https://authjs.dev/getting-started/authentication).
