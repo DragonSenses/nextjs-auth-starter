@@ -3756,7 +3756,70 @@ export const { GET, POST } = handlers
 export { auth as middleware } from "@/auth"
 ```
 
+feat: Configure NextAuth with empty providers
+feat: Initialize NextAuth route handlers
+feat: Extend session expiration on middleware call
+
 ### 4. **Setup Authentication Methods**
 
-With that, the basic setup is complete! Next we’ll setup the first authentication methods and fill out that `providers` array. See [Authentication Auth.js Reference](https://authjs.dev/getting-started/authentication).
+With that, the basic setup is complete! Next we'll setup the first authentication methods and fill out that `providers` array. See [Authentication Auth.js Reference](https://authjs.dev/getting-started/authentication).
+
+#### OAuth with GitHub
+
+- [Configuring GitHub | Auth.js](https://authjs.dev/guides/configuring-github)
+
+##### Creating the server config
+
+Next, create the main Auth.js configuration file which contains the necessary configuration for Auth.js, as well as the dynamic route handler.
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import GitHub from "next-auth/providers/github"
+ 
+export const { handlers, auth } = NextAuth({
+  providers: [GitHub],
+})
+```
+
+We can update our earlier `auth.ts` file with the **GitHub** provider:
+
+feat: Add GitHub provider to NextAuth
+
+`auth.ts`
+```ts
+import NextAuth from "next-auth";
+import GitHub from "next-auth/providers/github";
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [GitHub],
+});
+```
+
+##### Update the route
+
+feat: Implement catch-all route for Auth.js API
+
+`./app/api/auth/[...nextauth]/route.ts`
+```ts
+import { handlers } from "@/auth" // Referring to the auth.ts we just created
+export const { GET, POST } = handlers
+export const runtime = "edge" // optional
+```
+
+Since this is a [catch-all dynamic route](https://nextjs.org/docs/pages/building-your-application/routing/dynamic-routes#catch-all-segments), it will respond to all the relevant Auth.js API routes so that your application can interact with the chosen OAuth provider using the [OAuth 2](https://oauth.net/2) protocol.
+
+##### Adding environment variables
+
+If you haven’t, create an `.env.local` file as explained in the [installation](https://authjs.dev/getting-started/installation) section and add the following two GitHub variables:
+
+`.env.local`
+```sh
+AUTH_SECRET="changeMe"
+ 
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
+```
+
+We will be filling `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` with proper values from the GitHub Developer Portal once we have registered our application in GitHub.
 
