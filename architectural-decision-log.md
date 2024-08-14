@@ -4054,3 +4054,29 @@ const config = {
   ],
 };
 ```
+
+### Edge runtime problem
+
+1. **Database Adapters and Auth.js**:
+   - Auth.js, when paired with a database client, forms a holistic authentication system.
+   - Database clients often use TCP sockets to communicate directly with the database server.
+   - PostgreSQL is a common database that follows this approach.
+
+2. **Edge Runtimes and Limitations**:
+   - Edge runtimes are server-side JavaScript runtimes optimized for lower-power hardware closer to users.
+   - These runtimes lack certain features/modules available in Node.js.
+   - For example, raw TCP sockets are generally not available in edge runtimes.
+
+3. **Solving the Problem**:
+   - To work around this limitation, some solutions involve using an API server.
+   - The API server translates HTTP requests into a protocol the database can understand.
+   - This allows client-side code to make HTTP requests to the API server, which is universally supported by edge runtimes.
+
+4. **Middleware in Next.js**:
+   - Next.js Middleware can protect routes by checking session existence and determining the next route.
+   - Middleware code runs in edge runtimes by default.
+   - When using a non-"edge compatible" database adapter (like PostgreSQL), we need to find alternative ways to query the database.
+
+In summary, to handle database communication in edge runtimes, consider using an API server and explore alternative approaches to querying databases. Middleware in Next.js can also help protect routes based on session information. 
+
+Therefore, **to use a database adapter that isn’t explicitly "edge compatible", we will need to find a way to query the database using the features that we do have available to us.**
