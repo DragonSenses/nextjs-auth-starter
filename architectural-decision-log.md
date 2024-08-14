@@ -4057,6 +4057,8 @@ const config = {
 
 ### Edge runtime problem
 
+- [Authjs edge compatibility problem](https://authjs.dev/guides/edge-compatibility#the-problem)
+
 1. **Database Adapters and Auth.js**:
    - Auth.js, when paired with a database client, forms a holistic authentication system.
    - Database clients often use TCP sockets to communicate directly with the database server.
@@ -4080,3 +4082,33 @@ const config = {
 In summary, to handle database communication in edge runtimes, consider using an API server and explore alternative approaches to querying databases. Middleware in Next.js can also help protect routes based on session information. 
 
 Therefore, **to use a database adapter that isn’t explicitly "edge compatible", we will need to find a way to query the database using the features that we do have available to us.**
+
+### Edge runtime solution
+
+- [Authjs edge compatibility solution](https://authjs.dev/guides/edge-compatibility#the-solution)
+
+- **Auth.js and Database Sessions**:
+  - Auth.js, when paired with a database session strategy and a database adapter, makes frequent database calls during normal operations.
+  - It checks if a user's session token is valid by querying the database.
+  - Every `auth()` call triggers a database query.
+  - Auth.js uses caching and other optimizations to minimize unnecessary requests.
+
+- **Edge Runtimes and Workaround**:
+  - Edge runtimes lack certain features (like raw TCP sockets).
+  - To use Auth.js in edge runtimes with various database adapters, we need a workaround.
+  - Consider creating separate versions of next-auth:
+    - One without database settings for edge environments.
+    - Another with database settings for other environments.
+    - Use "lazy initialization" to instantiate clients accordingly.
+
+Instructions:
+
+1. First, a common Auth.js configuration object to be used everywhere. This **will not** include the database adapter.
+2. Next, a separate **instantiated** Auth.js instance which imports that configuration, but also adds the adapter and using `jwt` for the Session strategy:
+3. Our Middleware, which would then import the configuration **without the database adapter** and instantiate its own Auth.js client.
+4. Finally, everywhere else we can import from the primary `auth.ts` configuration and use `next-auth` as usual. See our [session management](https://authjs.dev/getting-started/session-management/protecting) docs for more examples.
+
+Note:
+
+It is important to note here that we’ve now removed database functionality and support from `next-auth` **in the middleware**. That means that we won’t be able to fetch the session or other info like the user’s account details, etc. while executing code in middleware. That means you’ll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you’re [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie’s expiry time, for example.
+
