@@ -4112,3 +4112,71 @@ Note:
 
 It is important to note here that we’ve now removed database functionality and support from `next-auth` **in the middleware**. That means that we won’t be able to fetch the session or other info like the user’s account details, etc. while executing code in middleware. That means you’ll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you’re [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie’s expiry time, for example.
 
+Let's implement the solution.
+
+feat(auth): Separate edge and non-edge versions
+
+To address the edge runtime limitations, we create two versions of next-auth:
+1. An edge-specific version without database settings.
+2. A standard version with database support for other environments.
+
+We achieve this using Auth.js "lazy initialization" to instantiate clients accordingly. We implement the split config workaround solution. 
+
+For more details refer to: [Auth.js Edge Compatibility Guide](https://authjs.dev/guides/edge-compatibility#the-solution)
+
+#### 1. First, a common Auth.js configuration object to be used everywhere. This **will not** include the database adapter.
+
+`auth.config.ts`
+```ts
+import GitHub from "next-auth/providers/github"
+import type { NextAuthConfig } from "next-auth"
+ 
+// Notice this is only an object, not a full Auth.js instance
+export default {
+  providers: [GitHub],
+} satisfies NextAuthConfig
+```
+
+#### 2. Next, a separate **instantiated** Auth.js instance which imports that configuration, but also adds the adapter and using `jwt` for the Session strategy:
+
+`auth.ts`
+```ts
+import NextAuth from "next-auth"
+import authConfig from "./auth.config"
+ 
+import { PrismaClient } from "@prisma/client"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+ 
+const prisma = new PrismaClient()
+ 
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
+  ...authConfig,
+})
+```
+
+feat(auth): Configure NextAuth with PrismaAdapter
+
+- Create a separate Auth.js instance using the configuration from auth.config.ts `auth.config.ts`
+- Add the Prisma Adapter
+- Add JWT session strategy
+
+Let's also use our `PrismaSingleton` instead of instantiating a new `PrismaClient` here.
+
+feat: Configure NextAuth with prisma singleton
+
+`auth.ts`
+```ts
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter"
+
+import authConfig from "@/auth.config";
+import prisma from "@/db/prismaSingleton";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
+  ...authConfig,
+});
+```
