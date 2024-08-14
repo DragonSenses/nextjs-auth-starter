@@ -3833,7 +3833,43 @@ Now if you navigate to `localhost:3000/auth/signin` we can see in the terminal t
 
 The `config` is simply and object with a `matcher` to be able to invoke the middleware (i.e., `auth` function).
 
+##### **matcher regex statements:**
 
+feat: Configure selective middleware paths
+
+Specify regular expressions to match request paths, excluding API routes, static files, image optimization files, and favicon.ico.
+
+From [Next.js](https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher)
+```ts
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+}
+```
+
+feat: Configure middleware paths
+
+Specify regular expressions to match request paths, excluding Next.js internals and all static files (unless found in search params). Always run for API routes.
+
+From [Clerk middleware](https://clerk.com/docs/references/nextjs/clerk-middleware)
+```ts
+export const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+};
+```
 
 ### 4. **Setup Authentication Methods**
 
