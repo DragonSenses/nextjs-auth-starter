@@ -4284,3 +4284,51 @@ export default function SettingsPage() {
 }
 ```
 
+To import and use `next-auth` in our protected settings page we need to do the following:
+  - import primary `auth.ts` configuration
+  - Convert function to `async`
+  - `await` the `auth()` function to get the `session`
+  - Render the session value
+
+feat: Add authentication to settings page
+
+```tsx
+import React from 'react';
+import { auth } from '@/auth';
+
+export default async function SettingsPage() {
+
+  const session = await auth();
+ 
+  return (
+    <div>
+      {JSON.stringify(session)}
+    </div>
+  )
+}
+```
+
+1. **Imports:**
+   - It imports the `React` library and the `auth` function from the `@/auth` module.
+   - The `auth` function seems to be related to authentication.
+
+2. **Function Component:**
+   - The `SettingsPage` function is an **asynchronous** function component.
+   - It awaits the result of the `auth()` function.
+
+3. **Rendering:**
+   - Inside the component, it renders a `<div>` that displays the result of `JSON.stringify(session)`.
+
+4. **Session Handling:**
+   - The `session` variable is assigned the result of `await auth()`.
+   - The `auth()` function is responsible for fetching or managing user authentication data.
+
+5. **Output:**
+   - The rendered output will show the stringified `session` object within a `<div>`.
+
+When we load the page at `localhost:3000/settings` we should see that the `session` value is `null` because the user is not signed-in and authenticated.
+
+### How do we protect the routes?
+
+If the user is signed-out they should not be able to access the settings page.
+
