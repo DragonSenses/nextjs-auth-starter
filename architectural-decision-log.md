@@ -4222,3 +4222,43 @@ const config = {
   ],
 };
 ```
+
+#### 4. Finally, everywhere else we can import from the primary `auth.ts` configuration and use `next-auth` as usual.
+
+`app/protected/page.tsx`
+```tsx
+import { auth } from "@/auth"
+ 
+export default async function Page() {
+  const session = await auth()
+ 
+  if (!session) {
+    return <div>Not authenticated</div>
+  }
+ 
+  return (
+    <div className="container">
+      <pre>{session}</pre>
+    </div>
+  )
+}
+```
+
+> It is important to note here that we’ve now removed database functionality and support from `next-auth` **in the middleware**. That means that we won’t be able to fetch the session or other info like the user’s account details, etc. while executing code in middleware. That means you’ll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you’re [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie’s expiry time, for example.
+
+## Example - protected page
+
+Let's see how our split config and Auth.js all comes together.
+
+Create `app\(protected)\settings\page.tsx`, a `SettingsPage` which will be located in the route `localhost:3000/settings`.
+
+```tsx
+import React from 'react';
+
+export default function SettingsPage() {
+  return (
+    <div>SettingsPage</div>
+  )
+}
+```
+
