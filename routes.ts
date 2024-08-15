@@ -7,3 +7,11 @@ export const publicRoutes: string[] = [
   "/",
 ];
 
+/**
+ * An array of protected routes that require authentication.
+ * @type {string[]}
+ */
+export const protectedRoutes: string[] = [
+  "/auth/login",
+  "/auth/register",
+];
