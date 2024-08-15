@@ -1,7 +1,9 @@
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+ 
+const { auth: middleware } = NextAuth(authConfig);
 
-export default auth((req) => {
-  // req.auth
+export default middleware((req) => {
   console.log("ROUTE: ", req.nextUrl.pathname);
 });
 
