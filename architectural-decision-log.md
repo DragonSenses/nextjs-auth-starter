@@ -4180,3 +4180,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
 });
 ```
+
+#### 3. Our Middleware, which would then import the configuration **without the database adapter** and instantiate its own Auth.js client.
+
+`middleware.ts`
+```ts
+import NextAuth from "next-auth"
+import authConfig from "./auth.config"
+ 
+export const { auth: middleware } = NextAuth(authConfig)
+```
+
+Let's adapt it so that we export the `auth()` function as the `middleware` and also include our `config` matcher.
+
+feat: Create custom middleware with config matcher
+
+This commit modifies the `middleware.ts` file to export the `auth()` function as `middleware`. Additionally, it includes a custom `config` matcher for route handling.
+
+Changes:
+- Import Auth.js configuration object without the database adapter
+- Instantiate its own Auth.js client
+- Renamed `auth` to `middleware` for clarity.
+- Added a custom `config` object with route matchers.
+
+```ts
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+ 
+const { auth: middleware } = NextAuth(authConfig);
+
+export default middleware((req) => {
+  console.log("ROUTE: ", req.nextUrl.pathname);
+});
+
+const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+};
+```
