@@ -4332,3 +4332,76 @@ When we load the page at `localhost:3000/settings` we should see that the `sessi
 
 If the user is signed-out they should not be able to access the settings page.
 
+### routes.ts
+
+First let's create a `routes.ts` file at the root of the application. The file will contain various routes and endpoints. For now create two arrays which contain public routes and protected routes respectively.
+
+feat(routes): Implement access control routes
+feat(routes): Define global array for publicRoutes
+feat(routes): Define array for protected routes
+
+`routes.ts`
+```ts
+/**
+ * An array of public routes accessible to all users.
+ * These routes do not require authentication.
+ * @type {string[]}
+ */
+export const publicRoutes: string[] = [
+  "/",
+];
+
+/**
+ * An array of protected routes that require authentication.
+ * @type {string[]}
+ */
+export const protectedRoutes: string[] = [
+  "/auth/login",
+  "/auth/register",
+];
+```
+
+In summary, `publicRoutes` are open to everyone, while `protectedRoutes` are accessible only to authenticated users. These definitions help organize our application's routing and ensure proper access control.
+
+1. **`publicRoutes`:**
+   - These are routes accessible to all users, regardless of whether they are authenticated or not.
+   - Typically, public routes include pages like the home page, landing pages, or informational content that doesn't require authentication.
+   - Examples:
+     - `/`: The root/home page.
+     - `/about`: An "About Us" page.
+     - `/contact`: A contact form.
+   - By defining these routes, we ensure that unauthenticated users can access them without any restrictions.
+
+2. **`protectedRoutes`:**
+   - These routes require user authentication. Only authenticated users can access them.
+   - Protected routes often include user-specific content, dashboards, account settings, or any feature that requires authentication.
+   - Examples:
+     - `/profile`: User profile page.
+     - `/dashboard`: User dashboard with personalized data.
+     - `/settings`: Account settings page.
+   - By defining these routes, we restrict access to authenticated users only, ensuring that sensitive or personalized information remains secure.
+
+Let's also add a prefix for the route `/api/auth` which we can name `authApiRoute`. We add this special case to ensure that we always allow the API to be available to all users regardless of authentication.
+
+feat(routes): Add API authentication base endpoint
+
+`routes.ts`
+```ts
+/**
+ * The base endpoint for API authentication routes.
+ * Routes that start with this prefix are dedicated to API authentication.
+ * @type {string}
+ */
+export const apiAuthRoute: string = "/api/auth";
+```
+
+feat(auth): Define default sign-in redirect path
+
+```ts
+/**
+ * The default redirect path after user sign-in and authentication.
+ * This path is used when no specific redirect is provided.
+ * @type {string}
+ */
+export const DEFAULT_SIGNIN_REDIRECT: string = "/settings";
+```
