@@ -18,6 +18,11 @@ export default auth(async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(pathname);
   const isProtectedRoute = protectedRoutes.includes(pathname);
 
+  if(isApiAuthRoute) {
+    // Allow access to /api/auth routes
+    return;
+  }
+
 });
 
 const config = {
