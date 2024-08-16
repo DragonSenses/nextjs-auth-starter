@@ -22,3 +22,10 @@ export const protectedRoutes: string[] = [
  * @type {string}
  */
 export const apiAuthRoute: string = "/api/auth";
+
+/**
+ * The default redirect path after user sign-in and authentication.
+ * This path is used when no specific redirect is provided.
+ * @type {string}
+ */
+export const DEFAULT_SIGNIN_REDIRECT: string = "/settings";
