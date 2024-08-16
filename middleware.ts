@@ -1,7 +1,10 @@
+import { NextRequest } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
-import { apiAuthRoute } from "@/routes";
-import { NextRequest } from "next/server";
+import { 
+  apiAuthRoute, 
+  publicRoutes 
+} from "@/routes";
  
 const { auth } = NextAuth(authConfig);
 
@@ -9,6 +12,7 @@ export default auth(async function middleware(req: NextRequest) {
   console.log("ROUTE: ", req.nextUrl.pathname);
 
   const isApiAuthRoute = req.nextUrl.pathname.startsWith(apiAuthRoute);
+  const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname);
 });
 
 const config = {
