@@ -1,11 +1,13 @@
 import { NextRequest } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
-import { 
+import {
   apiAuthRoute, 
+  DEFAULT_SIGNIN_REDIRECT,
   protectedRoutes, 
   publicRoutes 
 } from "@/routes";
+import { getSession } from "next-auth/react";
  
 const { auth } = NextAuth(authConfig);
 
@@ -22,7 +24,15 @@ export default auth(async function middleware(req: NextRequest) {
     // Allow access to /api/auth routes
     return;
   }
-
+  
+  if(isProtectedRoute) {
+    // Check if the user is signed in
+    const session = await getSession({ req });
+    if(!session) {
+      return Response.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, req.nextUrl));
+    }
+    return;
+  }
 });
 
 const config = {
