@@ -1,10 +1,13 @@
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
+import { apiAuthRoute } from "@/routes";
  
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   console.log("ROUTE: ", req.nextUrl.pathname);
+
+  const isApiAuthRoute = req.nextUrl.pathname.startsWith(apiAuthRoute);
 });
 
 const config = {
