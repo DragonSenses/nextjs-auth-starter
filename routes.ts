@@ -15,3 +15,10 @@ export const protectedRoutes: string[] = [
   "/auth/login",
   "/auth/register",
 ];
+
+/**
+ * The base endpoint for API authentication routes.
+ * Routes that start with this prefix are dedicated to API authentication.
+ * @type {string}
+ */
+export const apiAuthRoute: string = "/api/auth";
