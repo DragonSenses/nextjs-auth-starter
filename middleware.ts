@@ -10,11 +10,13 @@ import {
 const { auth } = NextAuth(authConfig);
 
 export default auth(async function middleware(req: NextRequest) {
-  console.log("ROUTE: ", req.nextUrl.pathname);
+  const { pathname } = req.nextUrl; // Destructure the pathname from req.nextUrl
 
-  const isApiAuthRoute = req.nextUrl.pathname.startsWith(apiAuthRoute);
-  const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname);
-  const isProtectedRoute = protectedRoutes.includes(req.nextUrl.pathname);
+  console.log("ROUTE: ", pathname); // Debug statement that logs current route
+
+  const isApiAuthRoute = pathname.startsWith(apiAuthRoute);
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isProtectedRoute = protectedRoutes.includes(pathname);
 
 });
 

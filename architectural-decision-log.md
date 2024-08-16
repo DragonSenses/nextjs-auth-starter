@@ -4460,7 +4460,36 @@ export const DEFAULT_SIGNIN_REDIRECT: string = "/settings";
 feat(auth): Add route authorization in middleware
 feat(auth): Implement custom middleware for routes
 
-Add global routes to middleware
+Back in `middleware.ts` let's first extract the `pathname` from the `req.nextUrl` to improve code clarity:
+
+refactor(auth): Improve readability in middleware
+
+This commit refactors the custom middleware by extracting the pathname from the request object. The use of a single `pathname` variable throughout the logic improves code clarity and readability.
+
+`middleware.ts`
+```ts
+import { NextRequest } from "next/server";
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+ 
+const { auth } = NextAuth(authConfig);
+
+export default auth(async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl; // Destructure the pathname from req.nextUrl
+
+  console.log("ROUTE: ", pathname); // Debug statement that logs current route
+
+});
+
+const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+};
+```
 
 Modify the `auth()` function in the middleware to handle different routes.
 
