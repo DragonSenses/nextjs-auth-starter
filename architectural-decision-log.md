@@ -4454,3 +4454,68 @@ feat(auth): Define default sign-in redirect path
  */
 export const DEFAULT_SIGNIN_REDIRECT: string = "/settings";
 ```
+
+### Route authorization
+
+feat(auth): Add route authorization in middleware
+feat(auth): Implement custom middleware for routes
+
+Add global routes to middleware
+
+Modify the `auth()` function in the middleware to handle different routes.
+
+feat(auth): Allow api auth routes in middleware
+
+```ts
+import { NextRequest } from "next/server";
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+import { apiAuthRoute } from "@/routes";
+ 
+const { auth } = NextAuth(authConfig);
+
+export default auth(async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl; // Destructure the pathname from req.nextUrl
+
+  const isApiAuthRoute = pathname.startsWith(apiAuthRoute);
+});
+```
+
+feat(auth): Add public routes to custom middleware
+
+```ts
+import { 
+  apiAuthRoute, 
+  publicRoutes 
+} from "@/routes";
+ 
+const { auth } = NextAuth(authConfig);
+
+export default auth(async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  const isApiAuthRoute = pathname.startsWith(apiAuthRoute);
+  const isPublicRoute = publicRoutes.includes(pathname);
+});
+```
+
+feat(auth): Add protected routes to middleware
+
+```ts
+import { 
+  apiAuthRoute, 
+  protectedRoutes, 
+  publicRoutes 
+} from "@/routes";
+ 
+const { auth } = NextAuth(authConfig);
+
+export default auth(async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  const isApiAuthRoute = pathname.startsWith(apiAuthRoute);
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isProtectedRoute = protectedRoutes.includes(pathname);
+
+});
+```
