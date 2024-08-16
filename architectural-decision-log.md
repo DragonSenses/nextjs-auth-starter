@@ -4245,6 +4245,55 @@ const config = {
 };
 ```
 
+Notice that in step 3 of [authjs - migrating to v5 edge compatibility](https://authjs.dev/getting-started/migrating-to-v5#edge-compatibility) we have this instruction:
+
+3. In your middleware file, import the configuration object from your first `auth.config.ts` file and use it to lazily initialize Auth.js there. In effect, initialize Auth.js separately with all of your common options, **but without the edge incompatible adapter**.
+
+Example:
+
+`middleware.ts`
+```ts
+import authConfig from "./auth.config"
+import NextAuth from "next-auth"
+ 
+// Use only one of the two middleware options below
+// 1. Use middleware directly
+// export const { auth: middleware } = NextAuth(authConfig)
+ 
+// 2. Wrapped middleware option
+const { auth } = NextAuth(authConfig)
+export default auth(async function middleware(req: NextRequest) {
+  // Your custom middleware logic goes here
+})
+```
+
+**The main idea**, is to separate the part of the configuration that is edge-compatible from the rest, and only import the edge-compatible part in Middleware/Edge pages/routes. You can read more about this workaround in the [Prisma docs](https://authjs.dev/getting-started/adapters/prisma), for example.
+
+We will go with the wrapped middleware approach.
+
+feat(auth): Implement wrapped middleware option
+
+```ts
+import { NextRequest } from "next/server";
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+ 
+const { auth } = NextAuth(authConfig);
+
+export default auth(async function middleware(req: NextRequest) {
+  console.log("ROUTE: ", req.nextUrl.pathname);
+});
+
+const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+};
+```
+
 #### 4. Finally, everywhere else we can import from the primary `auth.ts` configuration and use `next-auth` as usual.
 
 `app/protected/page.tsx`
