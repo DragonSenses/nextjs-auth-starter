@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { 
   apiAuthRoute, 
+  protectedRoutes, 
   publicRoutes 
 } from "@/routes";
  
@@ -13,6 +14,8 @@ export default auth(async function middleware(req: NextRequest) {
 
   const isApiAuthRoute = req.nextUrl.pathname.startsWith(apiAuthRoute);
   const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname);
+  const isProtectedRoute = protectedRoutes.includes(req.nextUrl.pathname);
+
 });
 
 const config = {
