@@ -20,19 +20,28 @@ export default auth(async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(pathname);
   const isProtectedRoute = protectedRoutes.includes(pathname);
 
+  // Check if the user is signed in
+  const session = await getSession({ req });
+
   if(isApiAuthRoute) {
     // Allow access to /api/auth routes
     return;
   }
   
   if(isProtectedRoute) {
-    // Check if the user is signed in
-    const session = await getSession({ req });
     if(!session) {
       return Response.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, req.nextUrl));
     }
     return;
   }
+
+  // If not signed-in and not on a public route, then redirect
+  if (!session && !isPublicRoute) {
+    return Response.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, req.nextUrl));
+  }
+
+  // Allow every other route
+  return;
 });
 
 const config = {
