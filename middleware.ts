@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import {
@@ -7,41 +7,35 @@ import {
   protectedRoutes, 
   publicRoutes 
 } from "@/routes";
-import { getSession } from "next-auth/react";
+
+// Use only one of the two middleware options below
+// 1. Use middleware directly
+// export const { auth: middleware } = NextAuth(authConfig)
  
+// 2. Wrapped middleware option
 const { auth } = NextAuth(authConfig);
 
 export default auth(async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl; // Destructure the pathname from req.nextUrl
+  const { pathname } = req.nextUrl;
 
-  console.log("ROUTE: ", pathname); // Debug statement that logs current route
+  console.log("ROUTE: ", pathname);
 
   const isApiAuthRoute = pathname.startsWith(apiAuthRoute);
   const isPublicRoute = publicRoutes.includes(pathname);
   const isProtectedRoute = protectedRoutes.includes(pathname);
 
-  // Check if the user is signed in
-  const session = await getSession({ req });
-
-  if(isApiAuthRoute) {
-    // Allow access to /api/auth routes
-    return;
-  }
-  
-  if(isProtectedRoute) {
-    if(!session) {
-      return Response.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, req.nextUrl));
-    }
-    return;
+  if (isApiAuthRoute || isPublicRoute) {
+    // Allow access to /api/auth routes and public routes
+    return NextResponse.next();
   }
 
-  // If not signed-in and not on a public route, then redirect
-  if (!session && !isPublicRoute) {
-    return Response.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, req.nextUrl));
+  if (isProtectedRoute) {
+    // Redirect to sign-in page if not authenticated
+    return NextResponse.redirect(DEFAULT_SIGNIN_REDIRECT);
   }
 
   // Allow every other route
-  return;
+  return NextResponse.next();
 });
 
 const config = {
