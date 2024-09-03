@@ -4081,7 +4081,7 @@ const config = {
 
 In summary, to handle database communication in edge runtimes, consider using an API server and explore alternative approaches to querying databases. Middleware in Next.js can also help protect routes based on session information. 
 
-Therefore, **to use a database adapter that isn’t explicitly "edge compatible", we will need to find a way to query the database using the features that we do have available to us.**
+Therefore, **to use a database adapter that isn't explicitly "edge compatible", we will need to find a way to query the database using the features that we do have available to us.**
 
 ### Edge runtime solution
 
@@ -4110,7 +4110,7 @@ Instructions:
 
 Note:
 
-It is important to note here that we’ve now removed database functionality and support from `next-auth` **in the middleware**. That means that we won’t be able to fetch the session or other info like the user’s account details, etc. while executing code in middleware. That means you’ll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you’re [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie’s expiry time, for example.
+It is important to note here that we've now removed database functionality and support from `next-auth` **in the middleware**. That means that we won't be able to fetch the session or other info like the user's account details, etc. while executing code in middleware. That means you'll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you're [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie's expiry time, for example.
 
 Let's implement the solution.
 
@@ -4315,7 +4315,7 @@ export default async function Page() {
 }
 ```
 
-> It is important to note here that we’ve now removed database functionality and support from `next-auth` **in the middleware**. That means that we won’t be able to fetch the session or other info like the user’s account details, etc. while executing code in middleware. That means you’ll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you’re [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie’s expiry time, for example.
+> It is important to note here that we've now removed database functionality and support from `next-auth` **in the middleware**. That means that we won't be able to fetch the session or other info like the user's account details, etc. while executing code in middleware. That means you'll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you're [protecting your routes](https://authjs.dev/getting-started/session-management/protecting) effectively. Middleware is then still used for bumping the session cookie's expiry time, for example.
 
 ## Example - protected page
 
@@ -4723,3 +4723,42 @@ const config = {
   ],
 };
 ```
+
+#### Remove database functionality and support from `next-auth` in the **middleware**
+
+Following the steps found in the [authjs prisma edge compatibility split config solution](https://authjs.dev/guides/edge-compatibility#the-solution), the bottom note states:
+
+It is important to note here that we've now removed database functionality and support from `next-auth` **in the middleware**. That means that we won't be able to fetch the session or other info like the user's account details, etc. while executing code in middleware. That means you'll want to rely on checks like the one demonstrated above in the `/app/protected/page.tsx` file to ensure you're [protecting your routes effectively](https://authjs.dev/getting-started/session-management/protecting). Middleware is then still used for bumping the session cookie's expiry time, for example.
+
+feat(middleware): Remove database functionality
+
+- Removed reliance on database functionality in middleware to support Edge Runtime.
+- Middleware no longer fetches session or user details.
+- Implemented route protection checks instead.
+
+```ts
+import NextAuth from "next-auth";
+import authConfig from "@/auth.config";
+
+// 1. Use middleware directly
+export const { auth: middleware } = NextAuth(authConfig)
+
+const config = {
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+};
+```
+
+refactor: Decouple middleware from database
+
+- Removed database functionality and session fetching from middleware.
+- Implemented route protection checks to ensure secure access.
+- Enhanced compatibility with Edge Runtime by eliminating Node.js API dependencies.
+
+The middleware change we're implementing can be considered a form of **decoupling**. By removing the reliance on database functionality and session fetching within the middleware, we're reducing the direct dependencies between the middleware and the database. This makes the middleware more modular and adaptable, especially for environments like the Edge Runtime where certain Node.js APIs aren't supported.
+
+Decoupling in this context helps to isolate concerns, allowing the middleware to focus on route protection and session management without being tightly coupled to the database operations. This can lead to a more maintainable and scalable codebase.
