@@ -4763,7 +4763,13 @@ The middleware change we're implementing can be considered a form of **decouplin
 
 Decoupling in this context helps to isolate concerns, allowing the middleware to focus on route protection and session management without being tightly coupled to the database operations. This can lead to a more maintainable and scalable codebase.
 
+##### Add route protection checks
 
+After importing the primary `auth.ts` config and use `next-auth` we need to add route protection checks. 
+
+- [authjs | Protecting Resources](https://authjs.dev/getting-started/session-management/protecting)
+
+Let's use the `routes.ts` file to find which routes we should be protecting:
 
 `routes.ts`
 ```ts
@@ -4777,3 +4783,55 @@ export const protectedRoutes: string[] = [
 ];
 ```
 
+refactor: Move resource protection to pages
+
+Moved resource protection functionality from middleware to individual pages.
+
+Now let's protect these routes manually with route protection checks.
+
+- Import `auth` from `@/auth`
+- Convert component to `async`
+- Get `session` by `await auth()`
+- Add route protection check and render not authenticated if `session` is `false
+
+feat: Add route protection check for SignInPage
+
+`app\auth\signin\page.tsx`
+```tsx
+import React from 'react';
+import { auth } from "@/auth"
+
+import SignInForm from '@/components/auth/SignInForm';
+
+export default async function SignInPage() {
+  const session = await auth()
+
+  if (!session) {
+    return <div>Not authenticated</div>
+  }
+
+  return (
+    <SignInForm />
+  );
+}
+```
+
+feat: Add route protection check for SignUpPage
+
+```tsx
+import React from 'react';
+import { auth } from '@/auth';
+import SignUpForm from '@/components/auth/SignUpForm';
+
+export default async function SignUpPage() {
+  const session = await auth();
+
+  if (!session) {
+    return <div>Not authenticated</div>
+  }
+
+  return (
+    <SignUpForm />
+  )
+}
+```
