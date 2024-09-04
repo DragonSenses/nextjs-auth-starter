@@ -4835,3 +4835,47 @@ export default async function SignUpPage() {
   )
 }
 ```
+
+
+
+### Redirect component
+
+feat: add reusable Redirect component
+
+Added a reusable Redirect component that handles client-side redirection using the useRouter hook from Next.js. The component accepts a 'to' prop for the target URL, making it versatile for various redirection needs.
+
+```tsx
+"use client";
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+// Define the Redirect component, which takes a 'to' prop for the URL to redirect to
+const Redirect = ({ to }: { to: string }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // This effect runs once when the component mounts
+    router.push(to); // Navigate to the specified URL
+  }, [router, to]); // Dependencies array ensures the effect runs only when 'router' or 'to' changes
+
+  return null; // Render nothing as this component is only for redirection
+};
+
+export default Redirect;
+```
+
+The `useEffect` hook is used in the `Redirect` component to perform side effects, such as navigating to a different URL, after the component has rendered. Here's why it's necessary:
+
+1. **Client-Side Navigation**: The `useRouter` hook from Next.js is used for client-side navigation. The `router.push(to)` method needs to be called after the component mounts to ensure the navigation happens on the client side.
+
+2. **Avoiding Infinite Loops**: By placing the navigation logic inside `useEffect`, we ensure that the redirection happens only once when the component mounts. If we put `router.push(to)` directly in the component body, it would cause an infinite loop of re-renders.
+
+Here's a quick breakdown of how `useEffect` works in this context:
+
+- **Mounting**: When the `Redirect` component mounts, `useEffect` runs the provided function.
+- **Dependency Array**: The empty dependency array `[]` ensures that the effect runs only once, similar to `componentDidMount` in class components.
+- **Navigation**: Inside the effect, `router.push(to)` is called to navigate to the specified URL.
+
+This ensures that the redirection logic is executed correctly and efficiently.
+
