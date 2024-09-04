@@ -4836,11 +4836,15 @@ export default async function SignUpPage() {
 }
 ```
 
+Now these are just examples, the behavior we **actually** want for the `SignInPage` and `SignUpPage` is actually different. Let's handle that in the next [section](#signup-page-session-management).
 
+## SignUp and SignIn page session management
+
+So far we can check if the user is already logged in through the `session` variable we get from `auth()`. The correct behavior is to redirect already authenticated users away from the signup/signin pages to a fallback URL: `DEFAULT_LOGIN_REDIRECT` or just `/settings` as specified in the `routes.ts` file.
 
 ### Redirect component
 
-feat: add reusable Redirect component
+feat: Create reusable Redirect component
 
 Added a reusable Redirect component that handles client-side redirection using the useRouter hook from Next.js. The component accepts a 'to' prop for the target URL, making it versatile for various redirection needs.
 
@@ -4878,4 +4882,54 @@ Here's a quick breakdown of how `useEffect` works in this context:
 - **Navigation**: Inside the effect, `router.push(to)` is called to navigate to the specified URL.
 
 This ensures that the redirection logic is executed correctly and efficiently.
+
+### Render Redirect on session existence
+
+feat(signup): Render Redirect on session existence
+
+Implemented logic to render the Redirect component in SignUpPage when a session exists. This ensures users are redirected to the appropriate page if they are already logged in.
+
+```tsx
+import React from 'react';
+import { auth } from '@/auth';
+import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
+import SignUpForm from '@/components/auth/SignUpForm';
+import Redirect from '@/components/auth/Redirect';
+
+export default async function SignUpPage() {
+  const session = await auth();
+
+  if (session) {
+    return <Redirect to={DEFAULT_SIGNIN_REDIRECT} />;
+  }
+
+  return (
+    <SignUpForm />
+  )
+}
+```
+
+feat(signin): Render Redirect on session existence
+
+Implemented logic to render the Redirect component in SignInPage when a session exists. This ensures users are redirected to the appropriate page if they are already logged in.
+
+```tsx
+import React from 'react';
+import { auth } from '@/auth';
+import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
+import SignUpForm from '@/components/auth/SignUpForm';
+import Redirect from '@/components/auth/Redirect';
+
+export default async function SignUpPage() {
+  const session = await auth();
+
+  if (session) {
+    return <Redirect to={DEFAULT_SIGNIN_REDIRECT} />;
+  }
+
+  return (
+    <SignUpForm />
+  )
+}
+```
 
