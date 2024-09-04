@@ -4933,7 +4933,79 @@ export default async function SignUpPage() {
 }
 ```
 
+### Dynamically import Redirect component
 
+Now in the `SignUpPage`, import the `Redirect` and render the component if `session` is truthy.
+
+refactor(SignUpPage): dynamic Redirect rendering
+
+Dynamically import and render the Redirect component in SignUpPage to handle client-side redirection. This ensures compatibility with server-side rendering and improves performance.
+
+```tsx
+import React from 'react';
+import { auth } from '@/auth';
+import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
+import SignUpForm from '@/components/auth/SignUpForm';
+
+import dynamic from 'next/dynamic';
+
+// Dynamically import the client component
+const Redirect = dynamic(() => import('@/components/auth/Redirect'), { ssr: false });
+
+export default async function SignUpPage() {
+  const session = await auth();
+
+  if (session) {
+    return <Redirect to={DEFAULT_SIGNIN_REDIRECT} />;
+  }
+
+  return (
+    <SignUpForm />
+  )
+}
+```
+
+We dynamically import the client component in `SignUpPage` to ensure that the redirection logic, which relies on client-side navigation, is only executed on the client side. Here are the key reasons for this approach:
+
+1. **Server-Side Rendering (SSR) Compatibility**:
+   - `SignUpPage` is a server component, meaning it is rendered on the server. Server components do not have access to client-side features like the `useRouter` hook from Next.js.
+   - By dynamically importing the client component with `{ ssr: false }`, we ensure that the client-side code (like `useRouter`) is only executed in the browser, not on the server.
+
+2. **Avoiding SSR Issues**:
+   - If we tried to use `useRouter` directly in a server component, it would cause errors because `useRouter` is designed to work only in the browser environment.
+   - Dynamic import with `ssr: false` prevents these issues by ensuring the client component is only rendered on the client side.
+
+3. **Performance Optimization**:
+   - Dynamic imports can help with performance by splitting the code and loading the client component only when needed. This can reduce the initial load time of the server-rendered page.
+
+refactor(SignInPage): dynamic Redirect rendering
+
+Dynamically import and render the Redirect component in SignInPage to handle client-side redirection. This ensures compatibility with server-side rendering and improves performance.
+
+```tsx
+import React from 'react';
+import { auth } from "@/auth"
+
+import dynamic from 'next/dynamic';
+
+// Dynamically import the client component
+const Redirect = dynamic(() => import('@/components/auth/Redirect'), { ssr: false });
+
+import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
+import SignInForm from '@/components/auth/SignInForm';
+
+export default async function SignInPage() {
+  const session = await auth()
+
+  if (session) {
+    return <Redirect to={DEFAULT_SIGNIN_REDIRECT} />;
+  }
+
+  return (
+    <SignInForm />
+  );
+}
+```
 
 docs: Add explanation of dynamic and lazy loading
 
