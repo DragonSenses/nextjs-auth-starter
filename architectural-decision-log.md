@@ -4887,7 +4887,7 @@ This ensures that the redirection logic is executed correctly and efficiently.
 
 feat(signup): Render Redirect on session existence
 
-Implemented logic to render the Redirect component in SignUpPage when a session exists. This ensures users are redirected to the appropriate page if they are already logged in.
+Implemented logic to render the Redirect component in SignUpPage when a session exists. This ensures users are redirected to the appropriate page if they are already signed in.
 
 ```tsx
 import React from 'react';
@@ -4911,7 +4911,7 @@ export default async function SignUpPage() {
 
 feat(signin): Render Redirect on session existence
 
-Implemented logic to render the Redirect component in SignInPage when a session exists. This ensures users are redirected to the appropriate page if they are already logged in.
+Implemented logic to render the Redirect component in SignInPage when a session exists. This ensures users are redirected to the appropriate page if they are already signed in.
 
 ```tsx
 import React from 'react';
@@ -4932,4 +4932,81 @@ export default async function SignUpPage() {
   )
 }
 ```
+
+
+
+docs: Add explanation of dynamic and lazy loading
+
+Added documentation to explain the concepts of dynamic and lazy loading. This includes the benefits of code splitting, client-side rendering, and conditional loading. Examples are provided to illustrate how to implement these techniques using Next.js.
+
+### `dynamic` from `next/dynamic`
+- [Lazy loading | Next.js Reference](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading)
+- [Lazy loading | Mozilla Reference](https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading)
+
+The `dynamic` function from `next/dynamic` in Next.js is used to dynamically import components. **This means that the component is only loaded when it's needed**, rather than at the initial page load. This can improve performance by reducing the initial bundle size and speeding up the initial load time of your application.
+
+### Key Features and Benefits:
+
+1. **Code Splitting**:
+   - Dynamic imports enable code splitting, which divides your code into smaller chunks. These chunks are loaded on demand, reducing the initial load time and improving performance².
+
+2. **Client-Side Rendering**:
+   - You can specify that a component should only be rendered on the client side by setting `ssr: false`. This is useful for components that rely on browser-specific APIs or need to interact with the DOM¹.
+
+3. **Conditional Loading**:
+   - Components can be loaded conditionally based on user interactions or other criteria. This helps in deferring the loading of components until they are actually needed¹.
+
+### Example Usage:
+
+Here's an example of how to use `dynamic` to import a component:
+
+```tsx
+import dynamic from 'next/dynamic';
+
+// Dynamically import the component
+const DynamicComponent = dynamic(() => import('../components/MyComponent'), { ssr: false });
+
+export default function MyPage() {
+  return (
+    <div>
+      <h1>My Page</h1>
+      <DynamicComponent />
+    </div>
+  );
+}
+```
+
+### Explanation:
+- **Importing `dynamic`**: First, you import the `dynamic` function from `next/dynamic`.
+- **Dynamic Import**: Use `dynamic` to import the component. The function takes a callback that returns the import statement for the component.
+- **SSR Option**: The `{ ssr: false }` option ensures that the component is only rendered on the client side, not during server-side rendering.
+- **Usage**: You can then use the dynamically imported component just like any other React component.
+
+### When to Use Dynamic Imports:
+- **Large Components**: For components that are large and not needed immediately.
+- **Client-Side Only**: For components that rely on client-side APIs or need to interact with the DOM.
+- **Conditional Rendering**: When you want to load components based on user interactions or other conditions.
+
+Dynamic imports are a powerful feature in Next.js that can help optimize your application's performance and user experience.
+
+From Mozilla:
+
+> Lazy loading is a strategy to identify resources as non-blocking (non-critical) and load these only when needed. It's a way to shorten the length of the critical rendering path, which translates into reduced page load times.
+
+> Lazy loading can occur on different moments in the application, but it typically happens on some user interactions such as scrolling and navigation.
+
+From Next.js:
+
+Lazy loading in Next.js helps improve the initial loading performance of an application by decreasing the amount of JavaScript needed to render a route.
+
+It allows you to defer loading of **Client Components** and imported libraries, and only include them in the client bundle when they're needed. For example, you might want to defer loading a modal until a user clicks to open it.
+
+There are two ways you can implement lazy loading in Next.js:
+
+  1. Using [Dynamic Imports](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#nextdynamic) with `next/dynamic`
+  2. Using [React.lazy()](https://react.dev/reference/react/lazy) with [Suspense](https://react.dev/reference/react/Suspense)
+
+By default, Server Components are automatically [code split](https://developer.mozilla.org/docs/Glossary/Code_splitting), and you can use [streaming](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming) to progressively send pieces of UI from the server to the client. Lazy loading applies to Client Components.
+
+`next/dynamic` is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
 
