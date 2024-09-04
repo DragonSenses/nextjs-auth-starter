@@ -4405,8 +4405,8 @@ export const publicRoutes: string[] = [
  * @type {string[]}
  */
 export const protectedRoutes: string[] = [
-  "/auth/login",
-  "/auth/register",
+  "/auth/signin",
+  "/auth/signup",
 ];
 ```
 
@@ -4762,3 +4762,18 @@ refactor: Decouple middleware from database
 The middleware change we're implementing can be considered a form of **decoupling**. By removing the reliance on database functionality and session fetching within the middleware, we're reducing the direct dependencies between the middleware and the database. This makes the middleware more modular and adaptable, especially for environments like the Edge Runtime where certain Node.js APIs aren't supported.
 
 Decoupling in this context helps to isolate concerns, allowing the middleware to focus on route protection and session management without being tightly coupled to the database operations. This can lead to a more maintainable and scalable codebase.
+
+
+
+`routes.ts`
+```ts
+/**
+ * An array of protected routes that require authentication.
+ * @type {string[]}
+ */
+export const protectedRoutes: string[] = [
+  "/auth/signin",
+  "/auth/signup",
+];
+```
+
