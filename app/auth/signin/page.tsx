@@ -1,8 +1,12 @@
 import React from 'react';
 import { auth } from "@/auth"
 
+import dynamic from 'next/dynamic';
+
+// Dynamically import the client component
+const Redirect = dynamic(() => import('@/components/auth/Redirect'), { ssr: false });
+
 import { DEFAULT_SIGNIN_REDIRECT } from '@/routes';
-import Redirect from '@/components/auth/Redirect';
 import SignInForm from '@/components/auth/SignInForm';
 
 export default async function SignInPage() {
