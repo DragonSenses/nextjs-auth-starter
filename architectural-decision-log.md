@@ -5393,4 +5393,56 @@ export default {
 } satisfies NextAuthConfig;
 ```
 
+### 1.3 Define the `credentials` object
+
+The `credentials` object in the `Credentials` provider configuration is used to define the fields that users need to submit when signing in. It specifies the labels, types, and placeholders for these fields. While it's not strictly necessary, it helps to provide a clear structure for the expected input.
+
+If you remove the `credentials` object, the provider will still work, but users won't have the guidance on what fields to fill in.
+
+However, it's generally a good practice to include the `credentials` object to make the expected input clear and user-friendly.
+
+We can check the `credentials` object should contain by looking at `/components/auth/SignInForm.tsx`.
+
+To create the `credentials` object for the sign-in form, we define the fields that users need to submit. 
+
+1. **Define the `credentials` object**:
+   - Specify the fields `email` and `password` with appropriate labels and types.
+
+2. **Integrate the `credentials` object into your NextAuth configuration**.
+
+feat: Define credentials object for validation
+
+- Added email and password fields to credentials object
+- Provides clear structure for user input in sign-in form
+- Ensures proper validation and user guidance
+
+`auth.config.ts`
+```ts
+import type { NextAuthConfig } from "next-auth";
+import GitHub from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+
+import { SignInSchema } from "@/schemas";
+import getUserByEmail from "./utils/getUserByEmail";
+
+export default {
+  providers: [
+    GitHub,
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "Enter your email address" },
+        password: { label: "Password", type: "password", placeholder: "**************" },
+      },
+      authorize: async (credentials) => {
+        // ... authorize logic
+      },
+    }),
+  ],
+} satisfies NextAuthConfig;
+```
+
+In this configuration:
+- The `credentials` object defines the `email` and `password` fields with labels, types, and placeholders.
+- The `authorize` function validates the credentials using the `SignInSchema` and performs the necessary authentication checks.
 
