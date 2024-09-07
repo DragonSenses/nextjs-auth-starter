@@ -5247,7 +5247,7 @@ Note: The Credentials provider only supports the JWT session strategy. You can s
 
 ## Credentials Provider with split-config
 
-### Initialize Credentials provider in Auth.js configuration file.
+### 1. Initialize Credentials provider in Auth.js configuration file.
 
 First, let's initialize the `Credentials` provider in the Auth.js configuration file. You'll have to import the provider and add it to your `providers` array.
 
@@ -5295,5 +5295,31 @@ export default {
     }),
   ],
 } satisfies NextAuthConfig;
-
 ```
+
+### 1.1 Add `SignInSchema` check in providers array
+
+Notice that the `SignInSchema` we defined in `/schemas/index.ts` is used in our server action: `/actions/signIn.ts`.
+
+But note that some users may not even use the sign-in screen to invoke the `signIn` server action. They can manually send information to the `/app/api/auth`. Because of this possibility we need to add the schema check in the providers array.
+
+Summary: Adding the `SignInSchema` check in the providers array ensures validation, even for users who bypass the sign-in screen and directly interact with the `/app/api/auth` endpoint.
+
+feat: Use SignInSchema to validate in auth config
+
+```ts
+import { SignInSchema } from "@/schemas";
+
+export default {
+  providers: [
+    GitHub,
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        // Validate the credentials using the SignInSchema
+        const parsedValues = SignInSchema.safeParse(credentials);
+```
+
