@@ -5161,3 +5161,82 @@ export function SignIn() {
 }
 ```
 
+### 3. Verifying Data with Zod
+
+To improve the security of your Credentials provider use, we can leverage a run-time schema validation library like [Zod](https://zod.dev/) to validate that the inputs match what we expect.
+
+```sh
+npm install zod
+```
+
+Next, we'll setup the schema and parsing in our `auth.ts` configuration file, using the `authorize` callback on the `Credentials` provider.
+
+`./lib/zod.ts`
+```ts
+import { object, string } from "zod"
+ 
+export const signInSchema = object({
+  email: string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email"),
+  password: string({ required_error: "Password is required" })
+    .min(1, "Password is required")
+    .min(8, "Password must be more than 8 characters")
+    .max(32, "Password must be less than 32 characters"),
+})
+```
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import { ZodError } from "zod"
+import Credentials from "next-auth/providers/credentials"
+import { signInSchema } from "./lib/zod"
+// Your own logic for dealing with plaintext password strings; be careful!
+import { saltAndHashPassword } from "@/utils/password"
+import { getUserFromDb } from "@/utils/db"
+ 
+export const { handlers, auth } = NextAuth({
+  providers: [
+    Credentials({
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        try {
+          let user = null
+ 
+          const { email, password } = await signInSchema.parseAsync(credentials)
+ 
+          // logic to salt and hash password
+          const pwHash = saltAndHashPassword(password)
+ 
+          // logic to verify if the user exists
+          user = await getUserFromDb(email, pwHash)
+ 
+          if (!user) {
+            throw new Error("User not found.")
+          }
+ 
+          // return JSON object with the user data
+          return user
+        } catch (error) {
+          if (error instanceof ZodError) {
+            // Return `null` to indicate that the credentials are invalid
+            return null
+          }
+        }
+      },
+    }),
+  ],
+})
+```
+
+Note: The industry has come a long way since usernames and passwords were first introduced as the go-to mechanism for authenticating and authorizing users to web applications. Therefore, if possible, we recommend a more modern and secure authentication mechanism such as any of the [OAuth providers](https://authjs.dev/getting-started/authentication/oauth), [Email Magic Links](https://authjs.dev/getting-started/authentication/email), or [WebAuthn (Passkeys)](https://authjs.dev/getting-started/authentication/webauthn) options instead of username / password.
+
+However, we also want to be flexible and support anything you deem appropriate for your application and use-case.
+
+Note: The Credentials provider only supports the JWT session strategy. You can still create and save a database session and reference it from the JWT via an id, but you'll need to provide that logic yourself.
