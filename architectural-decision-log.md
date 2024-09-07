@@ -5086,9 +5086,13 @@ By default, Server Components are automatically [code split](https://developer.m
 
 - [Credentials Provider | Auth.js](https://authjs.dev/getting-started/authentication/credentials)
 
+We'll walk through the documentation below, but to see our implementation of [Credentials provider with a split-config skip to that section](#credentials-provider-with-split-config).
+
 ### 1. Credentials Provider
 
 To setup Auth.js with external authentication mechanisms or simply use username and password, we need to use the `Credentials` provider. This provider is designed to forward any credentials inserted into the login form (.i.e username/password) to your authentication service via the authorize callback on the provider configuration.
+
+First, let's initialize the `Credentials` provider in the Auth.js configuration file. You'll have to import the provider and add it to your `providers` array.
 
 `./auth.ts`
 ```ts
@@ -5240,3 +5244,56 @@ Note: The industry has come a long way since usernames and passwords were first 
 However, we also want to be flexible and support anything you deem appropriate for your application and use-case.
 
 Note: The Credentials provider only supports the JWT session strategy. You can still create and save a database session and reference it from the JWT via an id, but you'll need to provide that logic yourself.
+
+## Credentials Provider with split-config
+
+### Initialize Credentials provider in Auth.js configuration file.
+
+First, let's initialize the `Credentials` provider in the Auth.js configuration file. You'll have to import the provider and add it to your `providers` array.
+
+feat: Add credentials provider in auth.config.ts
+
+- Imported CredentialsProvider from next-auth/providers/credentials
+- Added CredentialsProvider to the providers array
+- Configured the authorize function to validate user credentials
+
+`./auth.config.ts`
+```ts
+import type { NextAuthConfig } from "next-auth";
+import GitHub from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
+
+// Notice this is only an object, not a full Auth.js instance
+export default {
+  providers: [
+    GitHub,
+    Credentials({
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        let user = null;
+
+        // logic to salt and hash password
+        const pwHash = saltAndHashPassword(credentials.password);
+
+        // logic to verify if the user exists
+        user = await getUserFromDb(credentials.email, pwHash);
+
+        if (!user) {
+          // No user found, so this is their first attempt to login
+          // meaning this is also the place you could do registration
+          throw new Error("User not found.");
+        }
+
+        // return user object with their profile data
+        return user;
+      },
+    }),
+  ],
+} satisfies NextAuthConfig;
+
+```
