@@ -14,8 +14,8 @@ export default {
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, username, password, 2FA token, etc.
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email", placeholder: "Enter your email address" },
+        password: { label: "Password", type: "password", placeholder: "**************" },
       },
       authorize: async (credentials) => {
         // Validate the credentials using the SignInSchema
