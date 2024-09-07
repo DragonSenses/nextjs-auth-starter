@@ -5323,3 +5323,74 @@ export default {
         const parsedValues = SignInSchema.safeParse(credentials);
 ```
 
+### 1.2 Implement the `authorize` function 
+
+The `authorize` function validates the credentials using the `SignInSchema` and performs the necessary authentication checks.
+
+> The Credentials provider is designed to forward any credentials inserted into the login form (.i.e username/password) to your authentication service via the authorize callback on the provider configuration.
+
+Let's rewrite the `authorize` function to reflect this change. We want to validate the fields using the `SignInSchema`. We did this before in `actions/signIn.ts` with the code: `const parsedValues = SignInSchema.safeParse(values);`, but this time we don't pass in `values` we pass in `credentials`.
+
+feat: Add authorize function w/ schema validation
+
+- Added SignInSchema validation to the authorize function
+- Retrieved user by email from the database
+- Checked if the user exists and has a password
+- Compared provided password with stored hashed password
+- Returned user object if authentication is successful
+
+`auth.config.ts`
+```ts
+import type { NextAuthConfig } from "next-auth";
+import GitHub from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+
+import { SignInSchema } from "@/schemas";
+import getUserByEmail from "@/utils/getUserByEmail";
+
+export default {
+  providers: [
+    GitHub,
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        // Validate the credentials using the SignInSchema
+        const parsedValues = SignInSchema.safeParse(credentials);
+        
+        if (parsedValues.success) {
+          const { email, password } = parsedValues.data;
+
+          // Retrieve the user by email from the database
+          const user = await getUserByEmail(email);
+
+          // Check if the user exists and has a password (not an OAuth user)
+          if (!user || !user.password) { 
+            // If no user or user password (user may have signed-in with OAuth Google or GitHub)
+            // Credentials provider will not work without the user's hashed password
+            return null; 
+          }
+
+          const passwordsMatch = await bcrypt.compare(
+            password,      // The password credential input
+            user.password, // The password hash from our database
+          );
+
+          if (passwordsMatch) {
+            // Return user object with their profile data
+            return user;
+          }
+        }
+
+        // Return null if validation or authentication fails
+        return null;
+      },
+    }),
+  ],
+} satisfies NextAuthConfig;
+```
+
+
