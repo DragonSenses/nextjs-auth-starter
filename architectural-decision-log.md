@@ -5131,3 +5131,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 If you're using TypeScript, you can [augment the `User` interface](https://authjs.dev/getting-started/typescript#module-augmentation) to match the response of your authorize callback, so whenever you read the user in other callbacks (like the `jwt`) the type will match correctly.
 
+### 2. Signin Form
+
+Finally, let's create a simple sign-in form.
+
+`./components/sign-in.tsx`
+```tsx
+import { signIn } from "@/auth"
+ 
+export function SignIn() {
+  return (
+    <form
+      action={async (formData) => {
+        "use server"
+        await signIn("credentials", formData)
+      }}
+    >
+      <label>
+        Email
+        <input name="email" type="email" />
+      </label>
+      <label>
+        Password
+        <input name="password" type="password" />
+      </label>
+      <button>Sign In</button>
+    </form>
+  )
+}
+```
+
