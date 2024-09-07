@@ -5082,3 +5082,52 @@ By default, Server Components are automatically [code split](https://developer.m
 
 `next/dynamic` is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
 
+## Credentials Provider
+
+- [Credentials Provider | Auth.js](https://authjs.dev/getting-started/authentication/credentials)
+
+### 1. Credentials Provider
+
+To setup Auth.js with external authentication mechanisms or simply use username and password, we need to use the `Credentials` provider. This provider is designed to forward any credentials inserted into the login form (.i.e username/password) to your authentication service via the authorize callback on the provider configuration.
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import Credentials from "next-auth/providers/credentials"
+// Your own logic for dealing with plaintext password strings; be careful!
+import { saltAndHashPassword } from "@/utils/password"
+ 
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [
+    Credentials({
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        let user = null
+ 
+        // logic to salt and hash password
+        const pwHash = saltAndHashPassword(credentials.password)
+ 
+        // logic to verify if the user exists
+        user = await getUserFromDb(credentials.email, pwHash)
+ 
+        if (!user) {
+          // No user found, so this is their first attempt to login
+          // meaning this is also the place you could do registration
+          throw new Error("User not found.")
+        }
+ 
+        // return user object with their profile data
+        return user
+      },
+    }),
+  ],
+})
+```
+
+If you're using TypeScript, you can [augment the `User` interface](https://authjs.dev/getting-started/typescript#module-augmentation) to match the response of your authorize callback, so whenever you read the user in other callbacks (like the `jwt`) the type will match correctly.
+
