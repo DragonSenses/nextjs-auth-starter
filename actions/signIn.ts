@@ -10,13 +10,14 @@ import { SignInSchema } from "@/schemas";
  * @returns An object with either a success message or an error message.
  */
 export default async function signIn(values: z.infer<typeof SignInSchema>) {
-  console.log(values);
+  console.log("Received values:", values);
 
   const parsedValues = SignInSchema.safeParse(values);
 
   if (!parsedValues.success) {
+    console.error("Validation errors:", parsedValues.error.errors);
     return {
-      error: "Invalid fields!",
+      error: "Invalid fields! Please check your input.",
     };
   }
 
