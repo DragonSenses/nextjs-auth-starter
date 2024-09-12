@@ -5446,7 +5446,23 @@ In this configuration:
 - The `credentials` object defines the `email` and `password` fields with labels, types, and placeholders.
 - The `authorize` function validates the credentials using the `SignInSchema` and performs the necessary authentication checks.
 
+## Use Credentials Provider in `signIn` server action
 
+With our `auth.config.ts` complete, we can now look in `auth.ts` and see what functions we have:
+
+```ts
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter"
+
+import authConfig from "@/auth.config";
+import prisma from "@/db/prismaSingleton";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
+  ...authConfig,
+});
+```
 
 We can now call the `signIn` function inside `actions/signIn.ts`.
 
@@ -5489,4 +5505,55 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
     success: "Sign in successful!",
   };
 }
+```
+
+Now we import `signIn` and rename it to `authSignIn` to avoid naming conflict with are `signIn` server action. We destructure the email and password from `parsedValues`. Then in a `try..catch`, call `authSignIn` with the credentials.
+
+feat(signIn): Invoke authSignIn with credentials
+
+- Destructured email and password from parsedValues.data
+- Invoked authSignIn with credentials in a try-catch block
+- Added error handling for sign-in process
+
+```ts
+"use server";
+
+import { z } from "zod";
+import { signIn as authSignIn} from "@/auth";
+import { SignInSchema } from "@/schemas";
+
+/**
+ * Validates user sign-in data using the provided schema.
+ *
+ * @param values - User input data to validate.
+ * @returns An object with either a success message or an error message.
+ */
+export default async function signIn(values: z.infer<typeof SignInSchema>) {
+  console.log("Received values:", values);
+
+  const parsedValues = SignInSchema.safeParse(values);
+
+  if (!parsedValues.success) {
+    console.error("Validation errors:", parsedValues.error.errors);
+    return {
+      error: "Invalid fields! Please check your input.",
+    };
+  }
+
+  const { email, password } = parsedValues.data;
+
+  try {
+    await authSignIn("credentials", {
+      email,
+      password,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    success: "Sign in successful!",
+  };
+}
+
 ```
