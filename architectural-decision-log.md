@@ -5596,3 +5596,45 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
 }
 ```
 
+### Add redirection to `authSignIn`
+
+The `signIn` function will also handle redirection after successful authentication. You can specify a `redirectTo` URL to redirect users to a specific page after they sign in.
+
+For this we will use our global variable `DEFAULT_SIGNIN_REDIRECT` to redirect to. We will have additional redirection logic later (using callbacks), but for now let's set add `redirectTo` to the `authSignIn` in the `signIn` server action:
+
+feat: Add redirection to signIn server action
+
+- Implemented redirection to a specified URL after successful sign-in.
+
+```ts
+import { DEFAULT_SIGNIN_REDIRECT } from "@/routes";
+
+export default async function signIn(values: z.infer<typeof SignInSchema>) {
+  console.log("Received values:", values);
+
+  const parsedValues = SignInSchema.safeParse(values);
+
+  if (!parsedValues.success) {
+    console.error("Validation errors:", parsedValues.error.errors);
+    return {
+      error: "Invalid fields! Please check your input.",
+    };
+  }
+
+  const { email, password } = parsedValues.data;
+
+  try {
+    await authSignIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_SIGNIN_REDIRECT,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+  return {
+    success: "Sign in successful!",
+  };
+}
+```
