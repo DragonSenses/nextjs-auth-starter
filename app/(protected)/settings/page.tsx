@@ -8,6 +8,9 @@ export default async function SettingsPage() {
   return (
     <div>
       {JSON.stringify(session)}
+      <form>
+
+      </form>
     </div>
   )
 }
