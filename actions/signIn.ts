@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { signIn as authSignIn} from "@/auth";
+import { DEFAULT_SIGNIN_REDIRECT } from "@/routes";
 import { SignInSchema } from "@/schemas";
 
 /**
@@ -28,6 +29,7 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
     await authSignIn("credentials", {
       email,
       password,
+      redirectTo: DEFAULT_SIGNIN_REDIRECT,
     });
   } catch (error) {
     console.error(error);
