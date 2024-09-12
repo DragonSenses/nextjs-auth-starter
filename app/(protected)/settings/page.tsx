@@ -9,7 +9,9 @@ export default async function SettingsPage() {
     <div>
       {JSON.stringify(session)}
       <form>
-
+        <button type="submit">
+          Sign Out
+        </button>
       </form>
     </div>
   )
