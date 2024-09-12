@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { signIn as authSignIn} from "@/auth";
 import { SignInSchema } from "@/schemas";
 
 /**
@@ -19,6 +20,17 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
     return {
       error: "Invalid fields! Please check your input.",
     };
+  }
+
+  const { email, password } = parsedValues.data;
+
+  try {
+    await authSignIn("credentials", {
+      email,
+      password,
+    });
+  } catch (error) {
+    console.error(error);
   }
 
   return {
