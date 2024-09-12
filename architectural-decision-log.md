@@ -5464,7 +5464,46 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 });
 ```
 
-We can now call the `signIn` function inside `actions/signIn.ts`.
+### `signIn` function of Auth.js
+
+- [Handling Signin and Signout | Auth.js](https://authjs.dev/getting-started/session-management/login)
+
+The `signIn` function in `auth.js` is typically used to handle user authentication. It is part of the NextAuth.js library, which provides a flexible and easy-to-use authentication solution for Next.js applications. The `signIn` function can be used to authenticate users with various providers, such as credentials, OAuth providers (like Google, GitHub), and more.
+
+Here's a brief overview of how the `signIn` function works:
+
+1. **Provider-Based Authentication**: You can pass a provider to the `signIn` function to authenticate directly with that provider. For example, `signIn("github")` will initiate the sign-in process with GitHub.
+
+2. **Credentials Authentication**: When using credentials, you can pass the user's email and password to the `signIn` function. This is useful for custom authentication systems where you handle user credentials directly.
+
+3. **Redirection**: The `signIn` function can also handle redirection after successful authentication. You can specify a `redirectTo` URL to redirect users to a specific page after they sign in.
+
+Here's an example of how you might use the `signIn` function with credentials:
+
+```ts
+import { signIn } from "next-auth/react";
+
+async function handleSignIn(email, password) {
+  try {
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirectTo: "/dashboard",
+    });
+    if (result.error) {
+      console.error("Sign-in error:", result.error);
+    } else {
+      console.log("Sign-in successful!");
+    }
+  } catch (error) {
+    console.error("Sign-in failed:", error);
+  }
+}
+```
+
+This function attempts to sign in a user with their email and password, and redirects them to the `/dashboard` page upon successful authentication.
+
+### Use the `signIn` function (as `authSignIn`) inside `actions/signIn.ts`.
 
 Let's improve the error handling and logging first:
 
@@ -5555,5 +5594,5 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
     success: "Sign in successful!",
   };
 }
-
 ```
+
