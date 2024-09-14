@@ -5703,3 +5703,40 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
   };
 }
 ```
+
+## `signOut` as `authSignOut`
+
+Let's use the `signOut` from `auth.ts` and rename it to `authSignOut`. Let's put it inside the `SettingsPage` to be able to clear our signin/credentials cache.
+
+feat: Implement sign-out functionality in settings
+
+- Add a form to the SettingsPage component
+- Implement server-side action for sign-out functionality
+- Rename signOut to authSignOut to avoid naming conflicts
+- Display session information within the page
+
+`app\(protected)\settings\page.tsx`
+```tsx
+import React from 'react';
+import { auth, signOut as authSignOut } from '@/auth';
+
+export default async function SettingsPage() {
+
+  const session = await auth();
+ 
+  return (
+    <div>
+      {JSON.stringify(session)}
+      <form action={async () => {
+        "use server";
+
+        await authSignOut();
+      }}>
+        <button type="submit">
+          Sign Out
+        </button>
+      </form>
+    </div>
+  )
+}
+```
