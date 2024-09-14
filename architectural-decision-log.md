@@ -5760,3 +5760,38 @@ export default async function SettingsPage() {
 5. **Sign Out**
    - Click the "Sign Out" button.
    - Confirm that you are redirected back to the sign-in page.
+
+## Extending the Session
+
+- [Extending the Session | Auth.js](https://authjs.dev/guides/extending-the-session)
+
+Auth.js libraries only expose a subset of the user's information by default in a session to not accidentally expose sensitive user information. This is `name`, `email`, and `image`.
+
+A common use case is to add the user's id to the session. Below it is shown how to do this based on the session strategy you are using.
+
+### With JWT
+
+To have access to the user id, add the following to your Auth.js configuration:
+
+`auth.ts`
+```ts
+  providers,
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) { // User is available during sign-in
+        token.id = user.id
+      }
+      return token
+    },
+    session({ session, token }) {
+      session.user.id = token.id
+      return session
+    },
+  },
+}
+```
+
+During sign-in, the `jwt` callback exposes the user's profile information coming from the provider. You can leverage this to add the user's id to the JWT token. Then, on subsequent calls of this API will have access to the user's id via `token.id`. Then, to expose the user's id in the actual session, you can access `token.id` in the session callback and save it on `session.user.id`.
+
+Calls to `auth()` or `useSession()` will now have access to the user's id.
+
