@@ -5740,3 +5740,23 @@ export default async function SettingsPage() {
   )
 }
 ```
+
+### Testing Sign-In and Sign-Out
+
+1. **Navigate to the Registration Page**
+   - Go to `localhost:3000/auth/signup`.
+
+2. **Register a New Account**
+   - Enter your username, email, and password.
+   - Submit the form to create your account.
+
+3. **Navigate to the Sign-In Page**
+   - Click on "Already have an account?" or go directly to `localhost:3000/auth/signin`.
+
+4. **Sign In**
+   - Enter your credentials to sign in.
+   - Upon successful sign-in, you should be redirected to the settings page where you will see your session details displayed as a JSON string and a sign-out button.
+
+5. **Sign Out**
+   - Click the "Sign Out" button.
+   - Confirm that you are redirected back to the sign-in page.
