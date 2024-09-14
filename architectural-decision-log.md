@@ -5795,3 +5795,58 @@ During sign-in, the `jwt` callback exposes the user's profile information coming
 
 Calls to `auth()` or `useSession()` will now have access to the user's id.
 
+### Extending the Session with JWT in a split configuration setup
+
+To extend the session with JWT in a split configuration setup, you'll need to modify both the `auth.ts` and `auth.config.ts` files. Here's how you can do it:
+
+### 1. `auth.config.ts`
+
+In this file, you define the callbacks for JWT and session handling. Add the necessary callbacks to extend the session with JWT.
+
+```ts
+import { NextAuthOptions } from 'next-auth';
+import Providers from 'next-auth/providers';
+
+const options: NextAuthOptions = {
+  providers: [
+    // Add your providers here
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      // Initial sign in
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Add token properties to the session
+      if (token) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+      }
+      return session;
+    },
+  },
+};
+
+export default options;
+```
+
+### 2. `auth.ts`
+
+In this file, you import the configuration and initialize the authentication.
+
+```ts
+import NextAuth from 'next-auth';
+import authOptions from './auth.config';
+
+export default NextAuth(authOptions);
+```
+
+### Explanation:
+- **JWT Callback**: This callback is called whenever a JWT is created or updated. You can add custom properties to the token here.
+- **Session Callback**: This callback is called whenever a session is checked. You can add custom properties from the token to the session here.
+
+By adding these callbacks, you ensure that the JWT is extended with the necessary properties and that these properties are available in the session.
