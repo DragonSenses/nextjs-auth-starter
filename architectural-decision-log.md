@@ -5877,3 +5877,85 @@ export interface CustomSession extends Session {
   };
 }
 ```
+
+### Get the ID from the session token for the current user
+
+Let's add a console statement inside `async session()` and log the two parameters: `session` and `token` as `sessionToken`.
+
+`auth.config.ts`
+```ts
+  callbacks: {
+    async jwt({ token, user }) {
+      const customToken = token as CustomJWT;
+      // Initial sign in
+      if (user) {
+        if (user.id && user.email) {
+          customToken.id = user.id;
+          customToken.email = user.email;
+        }
+      }
+      return customToken;
+    },
+    async session({ session, token }) {
+      const customSession = session as CustomSession;
+      const customToken = token as CustomJWT;
+
+      console.log({
+        session,
+        sessionToken: token,
+      })
+
+      // Add token properties to the session
+      if (customToken) {
+        customSession.user.id = customToken.id;
+        customSession.user.email = customToken.email;
+      }
+      return customSession;
+    },
+  },
+```
+
+We will get in the console something like this:
+
+```sh
+{
+  sessionToken: {
+    name: 'new',
+    email: 'new@email.com',
+    picture: null,
+    sub: 'clqo81sxj000ga7tanqbvv1x',
+    iat: 1703787810,
+    exp: 1706379810,
+    jti: 'ff4eaf6f-6e09-40df-ad248-df0007cac76f',
+  },
+  session: {
+    user: { name: 'new', email: 'new@email.com', image: null }
+  },
+}
+```
+
+We can determine the ID for the current user is contained in a property called `sub` from the `sessionToken`.
+
+So what we can do is that if we have both the `token.sub` and `session.user` we can assign the `session.user.id` to the `token.sub`, this will extend our session object.
+
+feat: Extend session object with current user ID
+
+```ts
+    async session({ session, token }) {
+      const customSession = session as CustomSession;
+      const customToken = token as CustomJWT;
+
+      // Add token properties to the session
+      if (customToken) {
+        customSession.user.id = customToken.id;
+        customSession.user.email = customToken.email;
+      }
+
+      // Assign the session.sub field (which is the ID) to the session.id
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+
+      return customSession;
+    },
+```
