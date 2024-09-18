@@ -5977,9 +5977,9 @@ feat: Add user role to Prisma schema
 ```prisma
 
 enum UserRole {
-  NONE,
-  USER,
-  ADMIN,
+  NONE
+  USER
+  ADMIN
 }
 
 model User {
