@@ -5998,3 +5998,30 @@ model User {
 }
 ```
 
+### Prisma Workflow: reset the database
+
+Before we do this, let's sign-out of our project. Then if our project is still running, close it with CTRL+C.
+
+For a reminder let's see how our prisma work flow cycle should be (see [Prisma Toolkit](#prisma-toolkit-database-modeling-and-workflow)). 
+
+- To see our list of commands:
+
+```sh
+npx prisma --help
+```
+
+- Generate artifacts (e.g. Prisma Client):
+
+```sh
+npx prisma generate
+```
+
+- Reset the entire database (**ONLY in development NOT in production**)
+
+```sh
+npx prisma migrate reset
+```
+
+- Have an overview of our database (e.g., pgAdmin, prisma studio, neon database, etc.)
+
+We should be able to see that no users are in the database anymore.
