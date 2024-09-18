@@ -3,6 +3,7 @@ import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
+import { CustomJWT, CustomSession } from '@/auth-types';
 import { SignInSchema } from "@/schemas";
 import getUserByEmail from "@/utils/getUserByEmail";
 
@@ -50,4 +51,27 @@ export default {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      const customToken = token as CustomJWT;
+      // Initial sign in
+      if (user) {
+        if (user.id && user.email) {
+          customToken.id = user.id;
+          customToken.email = user.email;
+        }
+      }
+      return customToken;
+    },
+    async session({ session, token }) {
+      const customSession = session as CustomSession;
+      const customToken = token as CustomJWT;
+      // Add token properties to the session
+      if (customToken) {
+        customSession.user.id = customToken.id;
+        customSession.user.email = customToken.email;
+      }
+      return customSession;
+    },
+  },
 } satisfies NextAuthConfig;
