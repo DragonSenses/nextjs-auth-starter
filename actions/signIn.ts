@@ -42,7 +42,8 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
           return { error: "An unexpected error occurred. Please try again later." };
       }
     }
-
+    
+    // Throw error to redirect as we are using authSignIn inside of server action
     throw error;
   }
 

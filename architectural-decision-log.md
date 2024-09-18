@@ -5695,6 +5695,7 @@ export default async function signIn(values: z.infer<typeof SignInSchema>) {
       }
     }
 
+    // Throw error to redirect as we are using authSignIn inside of server action
     throw error;
   }
 
@@ -5845,7 +5846,6 @@ import authOptions from './auth.config';
 export default NextAuth(authOptions);
 ```
 
-### Explanation:
 - **JWT Callback**: This callback is called whenever a JWT is created or updated. You can add custom properties to the token here.
 - **Session Callback**: This callback is called whenever a session is checked. You can add custom properties from the token to the session here.
 
