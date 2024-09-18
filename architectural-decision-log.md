@@ -5959,3 +5959,42 @@ feat: Extend session object with current user ID
       return customSession;
     },
 ```
+
+Now we know how to extend session object with ID, so anywhere where we can access the session the user ID is available to us.
+
+Next we want to be able to extend this behavior by adding custom fields to the session object. Let's create a custom field we would want to add to the session: user roles.
+
+## Add User roles
+
+Inside the prisma schema add the a `role` field to the `User` model. It will be of type `UserRole` which will be an enum containing: `NONE, USER, ADMIN`.
+
+feat: Add user role to Prisma schema
+
+- Added UserRole enum with NONE, USER, and ADMIN roles
+- Updated User model to include role field with default value USER
+
+`prisma\schema.prisma`
+```prisma
+
+enum UserRole {
+  NONE,
+  USER,
+  ADMIN,
+}
+
+model User {
+  id            String    @id @default(cuid())
+  username      String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
