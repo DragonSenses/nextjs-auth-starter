@@ -66,11 +66,18 @@ export default {
     async session({ session, token }) {
       const customSession = session as CustomSession;
       const customToken = token as CustomJWT;
+
       // Add token properties to the session
       if (customToken) {
         customSession.user.id = customToken.id;
         customSession.user.email = customToken.email;
       }
+
+      // Assign the session.sub field (which is the ID) to the session.id
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+
       return customSession;
     },
   },
