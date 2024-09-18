@@ -6025,3 +6025,32 @@ npx prisma migrate reset
 - Have an overview of our database (e.g., pgAdmin, prisma studio, neon database, etc.)
 
 We should be able to see that no users are in the database anymore.
+
+## Restricting user access to the app
+
+- [Restricting user access to the app | Auth.js](https://authjs.dev/guides/restricting-user-access)
+
+Auth.js libraries allow you to restrict users by intercepting the registration/login flow. You can use the `signIn` callback to control whether a user is allowed to sign up or not.
+
+> All callbacks are async functions, so you can also get extra information from a database or external APIs.
+
+### Restrict the app to company employees
+
+For example, it is possible to only allow your company's employees to sign up with their company email addresses.
+
+Add the following code to your Auth.js configuration:
+
+```ts
+callbacks: {
+  signIn({ profile }) {
+    return profile.email.endsWith("@yourdomain.com")
+  }
+}
+```
+
+If the user's email does not end with `@yourdomain.com`, the sign-up (in case of a database strategy) process will be blocked, and subsequent login attempts will be rejected as well.
+
+feat: Restrict user access during sign-in flow
+
+Using the signIn callback from auth.js to restrict users.
+
