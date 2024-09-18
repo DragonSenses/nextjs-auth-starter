@@ -5850,3 +5850,30 @@ export default NextAuth(authOptions);
 - **Session Callback**: This callback is called whenever a session is checked. You can add custom properties from the token to the session here.
 
 By adding these callbacks, you ensure that the JWT is extended with the necessary properties and that these properties are available in the session.
+
+### Custom JWT and Session types
+
+feat(auth): Create custom JWT and Session types
+
+- Defined CustomJWT and CustomSession interfaces to extend JWT and session objects
+- Updated auth.config.ts to use the custom types in JWT and session callbacks
+- Added type guards to ensure proper type assignments
+
+This commit ensures that JWT and session objects include necessary user properties, improving type safety and consistency.
+
+```ts
+import { JWT } from 'next-auth/jwt';
+import { Session } from 'next-auth';
+
+export interface CustomJWT extends JWT {
+  id: string;
+  email: string;
+}
+
+export interface CustomSession extends Session {
+  user: {
+    id: string;
+    email: string;
+  };
+}
+```
