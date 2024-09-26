@@ -6054,3 +6054,9 @@ feat: Restrict user access during sign-in flow
 
 Using the signIn callback from auth.js to restrict users.
 
+## Role-based access control
+
+- [Role-Based Access Control | Auth.js](https://authjs.dev/guides/role-based-access-control)
+
+There are two ways to add [role-based access control (RBAC)](https://en.wikipedia.org/wiki/Role-based_access_control) to your application with Auth.js, based on the [session strategy](https://authjs.dev/concepts/session-strategies) you choose. Let's see an example for each of these.
+
