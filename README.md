@@ -1,8 +1,10 @@
 # nextjs-auth-starter
 
-A Next.js starter template for authentication using Auth.js (NextAuth.js v5). Includes user registration, login, password reset, and OAuth support. 
+A Next.js starter template for authentication using Auth.js (NextAuth.js v5). Includes user registration, login, password reset, and OAuth support. This is still a **Work-in-Progress**.
 
 # Description
+
+**Work-in-Progress**
 
 # Technologies:
 
@@ -20,9 +22,9 @@ A Next.js starter template for authentication using Auth.js (NextAuth.js v5). In
 
 # Features
 
-- [ ] Auth.js (Next-auth v5)
-- [ ] Next.js 14
-- [ ] User registration
+- [x] Auth.js (Next-auth v5)
+- [x] Next.js 14
+- [x] User registration
 - [ ] Password reset
 - [ ] Email verification
 - [ ] OAuth Provider (Social login with Google & GitHub)
