@@ -6060,3 +6060,113 @@ Using the signIn callback from auth.js to restrict users.
 
 There are two ways to add [role-based access control (RBAC)](https://en.wikipedia.org/wiki/Role-based_access_control) to your application with Auth.js, based on the [session strategy](https://authjs.dev/concepts/session-strategies) you choose. Let's see an example for each of these.
 
+### Getting the role
+
+Start by adding a `profile()` callback to the providers' config to determine the user role:
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import Google from "next-auth/providers/google"
+ 
+export const { handlers, auth } = NextAuth({
+  providers: [
+    Google({
+      profile(profile) {
+        return { role: profile.role ?? "user", ... }
+      },
+    })
+  ],
+})
+```
+
+*Warning*: Determining the users role is your responsibility, you can either add your own logic or if your provider returns a role you can use that instead.
+
+### Persisting the role
+
+Persisting the role will be different depending on the [session strategy](https://authjs.dev/concepts/session-strategies) you're using. If you don't know which session strategy you're using, then most likely you're using JWT (the default one).
+
+#### With JWT
+
+When you don't have a database configured, the role will be persisted in a cookie, by using the `jwt()` callback. On sign-in, the `role` property is exposed from the `profile` callback on the `user` object. Persist the `user.role` value by assigning it to `token.role`. That's it!
+
+If you also want to use the role on the client, you can expose it via the `session` callback.
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import Google from "next-auth/providers/google"
+ 
+export const { handlers, auth } = NextAuth({
+  providers: [
+    Google({
+      profile(profile) {
+        return { role: profile.role ?? "user", ... }
+      },
+    })
+  ],
+  callbacks: {
+    jwt({ token, user }) {
+      if(user) token.role = user.role
+      return token
+    },
+    session({ session, token }) {
+      session.user.role = token.role
+      return session
+    }
+  }
+})
+```
+
+*Note*: With this strategy, if you want to update the role, the user needs to be forced to sign in again.
+
+#### With Database
+
+When you have a database, you can save the user role on the [User model](https://authjs.dev/reference/core/adapters#adapteruser). The below example is showing you how to do this with Prisma, but the idea is the same for all adapters.
+
+First, add a `role` column to the User model.
+
+`/prisma/schema.prisma`
+```prisma
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String?  // New column
+  accounts      Account[]
+  sessions      Session[]
+}
+```
+
+The `profile()` callback's return value is used to create users in the database. That's it! Your newly created users will now have an assigned role.
+
+If you also want to use the role on the client, you can expose it via the `session` callback.
+
+`./auth.ts`
+```ts
+import NextAuth from "next-auth"
+import Google from "next-auth/providers/google"
+import prisma from "lib/prisma"
+ 
+export const { handlers, auth } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    Google({
+      profile(profile) {
+        return { role: profile.role ?? "user", ... }
+      }
+    })
+  ],
+  callbacks: {
+    session({ session, user }) {
+      session.user.role = user.role
+      return session
+    }
+  }
+})
+```
+
+*Note*: It is up to you how you want to manage to update the roles, either through direct database access or building your role update API.
+
