@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { CustomJWT, CustomSession } from '@/auth-types';
 import { SignInSchema } from "@/schemas";
 import getUserByEmail from "@/utils/getUserByEmail";
+import getUserById from "@/utils/getUserById";
 
 // Notice this is only an object, not a full Auth.js instance
 export default {
@@ -61,6 +62,15 @@ export default {
           customToken.email = user.email;
         }
       }
+
+      if (!token.sub) { return token; }
+
+      const existingUser = await getUserById(token.sub);
+
+      if (!existingUser) { return token; }
+
+      token.role = existingUser.role;
+
       return customToken;
     },
     async session({ session, token }) {
@@ -71,11 +81,17 @@ export default {
       if (customToken) {
         customSession.user.id = customToken.id;
         customSession.user.email = customToken.email;
+        customSession.user.role = customToken.role;
       }
 
       // Assign the session.sub field (which is the ID) to the session.id
       if (token.sub && session.user) {
         session.user.id = token.sub;
+      }
+
+      // Add token role property to the session
+      if (token.role && session.user) {
+        session.user.role = token.role;
       }
 
       return customSession;
